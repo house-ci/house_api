@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreCountryRequest;
 use App\Http\Requests\UpdateCountryRequest;
-use App\Models\Country;
+use App\Models\Commands\Country;
 
 class CountryController extends Controller
 {
@@ -42,7 +42,7 @@ class CountryController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Country  $country
+     * @param  \App\Models\Commands\Country  $country
      * @return \Illuminate\Http\Response
      */
     public function show(Country $country)
@@ -53,7 +53,7 @@ class CountryController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Country  $country
+     * @param  \App\Models\Commands\Country  $country
      * @return \Illuminate\Http\Response
      */
     public function edit(Country $country)
@@ -65,7 +65,7 @@ class CountryController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\UpdateCountryRequest  $request
-     * @param  \App\Models\Country  $country
+     * @param  \App\Models\Commands\Country  $country
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateCountryRequest $request, Country $country)
@@ -76,7 +76,7 @@ class CountryController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Country  $country
+     * @param  \App\Models\Commands\Country  $country
      * @return \Illuminate\Http\Response
      */
     public function destroy(Country $country)

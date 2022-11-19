@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreRealEstateRequest;
 use App\Http\Requests\UpdateRealEstateRequest;
-use App\Models\RealEstate;
+use App\Models\Commands\RealEstate;
 
 class RealEstateController extends Controller
 {
@@ -42,7 +42,7 @@ class RealEstateController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\RealEstate  $realEstate
+     * @param  \App\Models\Commands\RealEstate  $realEstate
      * @return \Illuminate\Http\Response
      */
     public function show(RealEstate $realEstate)
@@ -53,7 +53,7 @@ class RealEstateController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\RealEstate  $realEstate
+     * @param  \App\Models\Commands\RealEstate  $realEstate
      * @return \Illuminate\Http\Response
      */
     public function edit(RealEstate $realEstate)
@@ -65,7 +65,7 @@ class RealEstateController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\UpdateRealEstateRequest  $request
-     * @param  \App\Models\RealEstate  $realEstate
+     * @param  \App\Models\Commands\RealEstate  $realEstate
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateRealEstateRequest $request, RealEstate $realEstate)
@@ -76,7 +76,7 @@ class RealEstateController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\RealEstate  $realEstate
+     * @param  \App\Models\Commands\RealEstate  $realEstate
      * @return \Illuminate\Http\Response
      */
     public function destroy(RealEstate $realEstate)

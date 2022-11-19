@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreRentRequest;
 use App\Http\Requests\UpdateRentRequest;
-use App\Models\Rent;
+use App\Models\Commands\Rent;
 
 class RentController extends Controller
 {
@@ -42,7 +42,7 @@ class RentController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Rent  $rent
+     * @param  \App\Models\Commands\Rent  $rent
      * @return \Illuminate\Http\Response
      */
     public function show(Rent $rent)
@@ -53,7 +53,7 @@ class RentController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Rent  $rent
+     * @param  \App\Models\Commands\Rent  $rent
      * @return \Illuminate\Http\Response
      */
     public function edit(Rent $rent)
@@ -65,7 +65,7 @@ class RentController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\UpdateRentRequest  $request
-     * @param  \App\Models\Rent  $rent
+     * @param  \App\Models\Commands\Rent  $rent
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateRentRequest $request, Rent $rent)
@@ -76,7 +76,7 @@ class RentController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Rent  $rent
+     * @param  \App\Models\Commands\Rent  $rent
      * @return \Illuminate\Http\Response
      */
     public function destroy(Rent $rent)

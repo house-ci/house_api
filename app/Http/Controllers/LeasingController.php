@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreLeasingRequest;
 use App\Http\Requests\UpdateLeasingRequest;
-use App\Models\Leasing;
+use App\Models\Commands\Leasing;
 
 class LeasingController extends Controller
 {
@@ -42,7 +42,7 @@ class LeasingController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Leasing  $leasing
+     * @param  \App\Models\Commands\Leasing  $leasing
      * @return \Illuminate\Http\Response
      */
     public function show(Leasing $leasing)
@@ -53,7 +53,7 @@ class LeasingController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Leasing  $leasing
+     * @param  \App\Models\Commands\Leasing  $leasing
      * @return \Illuminate\Http\Response
      */
     public function edit(Leasing $leasing)
@@ -65,7 +65,7 @@ class LeasingController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\UpdateLeasingRequest  $request
-     * @param  \App\Models\Leasing  $leasing
+     * @param  \App\Models\Commands\Leasing  $leasing
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateLeasingRequest $request, Leasing $leasing)
@@ -76,7 +76,7 @@ class LeasingController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Leasing  $leasing
+     * @param  \App\Models\Commands\Leasing  $leasing
      * @return \Illuminate\Http\Response
      */
     public function destroy(Leasing $leasing)

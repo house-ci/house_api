@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePropertyTypeRequest;
 use App\Http\Requests\UpdatePropertyTypeRequest;
-use App\Models\PropertyType;
+use App\Models\Commands\PropertyType;
 
 class PropertyTypeController extends Controller
 {
@@ -42,7 +42,7 @@ class PropertyTypeController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\PropertyType  $propertyType
+     * @param  \App\Models\Commands\PropertyType  $propertyType
      * @return \Illuminate\Http\Response
      */
     public function show(PropertyType $propertyType)
@@ -53,7 +53,7 @@ class PropertyTypeController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\PropertyType  $propertyType
+     * @param  \App\Models\Commands\PropertyType  $propertyType
      * @return \Illuminate\Http\Response
      */
     public function edit(PropertyType $propertyType)
@@ -65,7 +65,7 @@ class PropertyTypeController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\UpdatePropertyTypeRequest  $request
-     * @param  \App\Models\PropertyType  $propertyType
+     * @param  \App\Models\Commands\PropertyType  $propertyType
      * @return \Illuminate\Http\Response
      */
     public function update(UpdatePropertyTypeRequest $request, PropertyType $propertyType)
@@ -76,7 +76,7 @@ class PropertyTypeController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\PropertyType  $propertyType
+     * @param  \App\Models\Commands\PropertyType  $propertyType
      * @return \Illuminate\Http\Response
      */
     public function destroy(PropertyType $propertyType)

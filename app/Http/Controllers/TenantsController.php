@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTenantsRequest;
 use App\Http\Requests\UpdateTenantsRequest;
-use App\Models\Tenants;
+use App\Models\Commands\Tenants;
 
 class TenantsController extends Controller
 {
@@ -42,7 +42,7 @@ class TenantsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Tenants  $tenants
+     * @param  \App\Models\Commands\Tenants  $tenants
      * @return \Illuminate\Http\Response
      */
     public function show(Tenants $tenants)
@@ -53,7 +53,7 @@ class TenantsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Tenants  $tenants
+     * @param  \App\Models\Commands\Tenants  $tenants
      * @return \Illuminate\Http\Response
      */
     public function edit(Tenants $tenants)
@@ -65,7 +65,7 @@ class TenantsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\UpdateTenantsRequest  $request
-     * @param  \App\Models\Tenants  $tenants
+     * @param  \App\Models\Commands\Tenants  $tenants
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateTenantsRequest $request, Tenants $tenants)
@@ -76,7 +76,7 @@ class TenantsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Tenants  $tenants
+     * @param  \App\Models\Commands\Tenants  $tenants
      * @return \Illuminate\Http\Response
      */
     public function destroy(Tenants $tenants)

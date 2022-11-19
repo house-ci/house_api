@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreCityRequest;
 use App\Http\Requests\UpdateCityRequest;
-use App\Models\City;
+use App\Models\Commands\City;
 
 class CityController extends Controller
 {
@@ -42,7 +42,7 @@ class CityController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\City  $city
+     * @param  \App\Models\Commands\City  $city
      * @return \Illuminate\Http\Response
      */
     public function show(City $city)
@@ -53,7 +53,7 @@ class CityController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\City  $city
+     * @param  \App\Models\Commands\City  $city
      * @return \Illuminate\Http\Response
      */
     public function edit(City $city)
@@ -65,7 +65,7 @@ class CityController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\UpdateCityRequest  $request
-     * @param  \App\Models\City  $city
+     * @param  \App\Models\Commands\City  $city
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateCityRequest $request, City $city)
@@ -76,7 +76,7 @@ class CityController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\City  $city
+     * @param  \App\Models\Commands\City  $city
      * @return \Illuminate\Http\Response
      */
     public function destroy(City $city)

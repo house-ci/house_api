@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreMediaRequest;
 use App\Http\Requests\UpdateMediaRequest;
-use App\Models\Media;
+use App\Models\Commands\Media;
 
 class MediaController extends Controller
 {
@@ -42,7 +42,7 @@ class MediaController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Media  $media
+     * @param  \App\Models\Commands\Media  $media
      * @return \Illuminate\Http\Response
      */
     public function show(Media $media)
@@ -53,7 +53,7 @@ class MediaController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Media  $media
+     * @param  \App\Models\Commands\Media  $media
      * @return \Illuminate\Http\Response
      */
     public function edit(Media $media)
@@ -65,7 +65,7 @@ class MediaController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\UpdateMediaRequest  $request
-     * @param  \App\Models\Media  $media
+     * @param  \App\Models\Commands\Media  $media
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateMediaRequest $request, Media $media)
@@ -76,7 +76,7 @@ class MediaController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Media  $media
+     * @param  \App\Models\Commands\Media  $media
      * @return \Illuminate\Http\Response
      */
     public function destroy(Media $media)

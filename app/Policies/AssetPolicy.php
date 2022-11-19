@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\Models\Asset;
-use App\Models\User;
+use App\Models\Commands\Asset;
+use App\Models\Commands\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class AssetPolicy
@@ -13,7 +13,7 @@ class AssetPolicy
     /**
      * Determine whether the user can view any models.
      *
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\Commands\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function viewAny(User $user)
@@ -24,8 +24,8 @@ class AssetPolicy
     /**
      * Determine whether the user can view the model.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Asset  $asset
+     * @param  \App\Models\Commands\User  $user
+     * @param  \App\Models\Commands\Asset  $asset
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function view(User $user, Asset $asset)
@@ -36,7 +36,7 @@ class AssetPolicy
     /**
      * Determine whether the user can create models.
      *
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\Commands\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function create(User $user)
@@ -47,8 +47,8 @@ class AssetPolicy
     /**
      * Determine whether the user can update the model.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Asset  $asset
+     * @param  \App\Models\Commands\User  $user
+     * @param  \App\Models\Commands\Asset  $asset
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function update(User $user, Asset $asset)
@@ -59,8 +59,8 @@ class AssetPolicy
     /**
      * Determine whether the user can delete the model.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Asset  $asset
+     * @param  \App\Models\Commands\User  $user
+     * @param  \App\Models\Commands\Asset  $asset
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function delete(User $user, Asset $asset)
@@ -71,8 +71,8 @@ class AssetPolicy
     /**
      * Determine whether the user can restore the model.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Asset  $asset
+     * @param  \App\Models\Commands\User  $user
+     * @param  \App\Models\Commands\Asset  $asset
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function restore(User $user, Asset $asset)
@@ -83,8 +83,8 @@ class AssetPolicy
     /**
      * Determine whether the user can permanently delete the model.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Asset  $asset
+     * @param  \App\Models\Commands\User  $user
+     * @param  \App\Models\Commands\Asset  $asset
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function forceDelete(User $user, Asset $asset)

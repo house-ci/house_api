@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreOwnerRequest;
 use App\Http\Requests\UpdateOwnerRequest;
-use App\Models\Owner;
+use App\Models\Commands\Owner;
 
 class OwnerController extends Controller
 {
@@ -36,13 +36,14 @@ class OwnerController extends Controller
      */
     public function store(StoreOwnerRequest $request)
     {
-        //
+        Owner
+
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Owner  $owner
+     * @param  \App\Models\Commands\Owner  $owner
      * @return \Illuminate\Http\Response
      */
     public function show(Owner $owner)
@@ -53,7 +54,7 @@ class OwnerController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Owner  $owner
+     * @param  \App\Models\Commands\Owner  $owner
      * @return \Illuminate\Http\Response
      */
     public function edit(Owner $owner)
@@ -65,7 +66,7 @@ class OwnerController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\UpdateOwnerRequest  $request
-     * @param  \App\Models\Owner  $owner
+     * @param  \App\Models\Commands\Owner  $owner
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateOwnerRequest $request, Owner $owner)
@@ -76,7 +77,7 @@ class OwnerController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Owner  $owner
+     * @param  \App\Models\Commands\Owner  $owner
      * @return \Illuminate\Http\Response
      */
     public function destroy(Owner $owner)
