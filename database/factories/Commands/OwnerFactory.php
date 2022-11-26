@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\Commands;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -17,7 +17,12 @@ class OwnerFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'id' => fake()->uuid(),
+            'full_name' => fake()->name(),
+            'email' => fake()->safeEmail(),
+            'phone_number' => fake()->e164PhoneNumber(),
+            'picture_url' => fake()->imageUrl(),
+            'identifier' => fake()->uuid(),
         ];
     }
 }

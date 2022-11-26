@@ -16,14 +16,14 @@ return new class extends Migration
         Schema::create('leasings', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->dateTimeTz('started_on');
-            $table->dateTimeTz('ended_on');
+            $table->dateTimeTz('ended_on')->nullable();
             $table->integer('amount');
             $table->string('currency')->index()->default('XOF');
-            $table->string('payment_deadline_day');
+            $table->string('payment_deadline_day')->default('5');
             $table->string('agreement_url')->nullable();
-            $table->boolean('is_active');
-            $table->foreignUuid('asset_id');
-            $table->foreignUuid('tenant_id');
+            $table->boolean('is_active')->default(true);
+            $table->foreignUuid('asset_id')->constrained();
+            $table->foreignUuid('tenant_id')->constrained();
 
             $table->timestampsTz();
         });

@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -14,11 +13,18 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
-
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        $this->call([
+            PropertyTypeSeeder::class,
+            CountrySeeder::class,
+            OwnerSeeder::class,
+            CitySeeder::class,
+            CitySeeder::class,// put this double so we can have city with parent
+            RealEstateSeeder::class,
+            AssetSeeder::class,
+            MediaSeeder::class,
+            TenantsSeeder::class,
+            LeasingSeeder::class,
+            RentSeeder::class,
+        ]);
     }
 }

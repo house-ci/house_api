@@ -24,8 +24,7 @@ class StoreOwnerRequest extends FormRequest
     public function rules()
     {
         return [
-            "first_name" => "string|min:2|max:120",
-            "last_name" => "string|min:2|max:120",
+            "full_name" => "string|min:2|max:120",
             "email" => "email|min:2|max:120",
             "phone_number" => "string|min:8|max:20|nullable",
             "identifier" => "string"

@@ -2,20 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ApiResponse;
 use App\Http\Requests\StorePropertyTypeRequest;
 use App\Http\Requests\UpdatePropertyTypeRequest;
 use App\Models\Commands\PropertyType;
+use Illuminate\Http\JsonResponse;
 
 class PropertyTypeController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      */
     public function index()
     {
-        //
+        $propertyTypes = PropertyType::orderBy('name')->get();
+        return response()->json(ApiResponse::getRessourceSuccess(200, $propertyTypes));
     }
 
     /**

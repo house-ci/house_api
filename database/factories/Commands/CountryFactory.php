@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\Commands;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -17,7 +17,10 @@ class CountryFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'id' => fake()->uuid(),
+            'name' => fake()->country(),
+            'iso2' => fake()->countryCode(),
+            'prefix' => fake()->numberBetween(1, 255),
         ];
     }
 }

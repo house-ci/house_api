@@ -16,8 +16,7 @@ return new class extends Migration
         Schema::create('cities', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('name')->unique();
-            $table->uuid('parent_id')->nullable();
-            $table->foreignUuid('country_id');
+            $table->foreignUuid('country_id')->constrained();
 
             $table->timestampsTz();
         });

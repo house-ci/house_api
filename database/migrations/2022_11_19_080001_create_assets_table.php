@@ -22,7 +22,7 @@ return new class extends Migration {
             $table->string('currency')->default('XOF');
             $table->string('payment_deadline_day')->default('5');
             $table->json('extras');
-            $table->foreignUuid('real_estate_id');
+            $table->foreignUuid('real_estate_id')->constrained();
 
             $table->timestampsTz();
         });

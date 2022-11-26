@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreAssetRequest;
 use App\Http\Requests\UpdateAssetRequest;
-use App\Models\Asset;
+use App\Models\Commands\Asset;
 
 class AssetController extends Controller
 {
@@ -42,7 +42,7 @@ class AssetController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Asset  $asset
+     * @param  \App\Models\Commands\Asset  $asset
      * @return \Illuminate\Http\Response
      */
     public function show(Asset $asset)
@@ -53,7 +53,7 @@ class AssetController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Asset  $asset
+     * @param  \App\Models\Commands\Asset  $asset
      * @return \Illuminate\Http\Response
      */
     public function edit(Asset $asset)
@@ -65,7 +65,7 @@ class AssetController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\UpdateAssetRequest  $request
-     * @param  \App\Models\Asset  $asset
+     * @param  \App\Models\Commands\Asset  $asset
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateAssetRequest $request, Asset $asset)
@@ -76,7 +76,7 @@ class AssetController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Asset  $asset
+     * @param  \App\Models\Commands\Asset  $asset
      * @return \Illuminate\Http\Response
      */
     public function destroy(Asset $asset)

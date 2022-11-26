@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Commands\City;
 use Illuminate\Database\Seeder;
 
 class CitySeeder extends Seeder
@@ -14,6 +14,8 @@ class CitySeeder extends Seeder
      */
     public function run()
     {
-        //
+        City::factory()
+            ->count(35)
+            ->create();
     }
 }

@@ -1,7 +1,8 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\Commands;
 
+use App\Models\Queries\Asset;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +18,12 @@ class MediaFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'id' => fake()->uuid(),
+            'name' => fake()->uuid(),
+            'url' => fake()->imageUrl(),
+            'entity' => 'Asset',
+            'entity_id' => (fake()->randomElement(Asset::all()->toArray()))['id'],
+            'type' => 'image',
         ];
     }
 }

@@ -16,13 +16,13 @@ return new class extends Migration
         Schema::create('real_estates', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('name')->unique();
-            $table->string('location')->nullable();
+            $table->string('description')->nullable();
             $table->integer('number_of_floor');
             $table->string('lot')->nullable();
             $table->string('block')->nullable();
-            $table->foreignUuid('city_id');
-            $table->foreignUuid('property_type_id');
-            $table->foreignUuid('owner_id');
+            $table->foreignUuid('city_id')->constrained();
+            $table->foreignUuid('property_type_id')->constrained();
+            $table->foreignUuid('owner_id')->constrained();
 
             $table->timestampsTz();
         });

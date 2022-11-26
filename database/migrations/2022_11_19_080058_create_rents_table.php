@@ -18,11 +18,11 @@ return new class extends Migration
             $table->string('label')->index();
             $table->string('month');
             $table->string('year');
-            $table->string('status');
+            $table->string('status')->default('PENDING');
             $table->integer('amount');
             $table->string('currency')->default('XOF');
-            $table->dateTimeTz('paid_at');
-            $table->foreignUuid('leasing_id');
+            $table->dateTimeTz('paid_at')->nullable();
+            $table->foreignUuid('leasing_id')->constrained();
 
             $table->timestampsTz();
         });

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('name')->index();
             $table->string('url');
             $table->string('entity')->index();
-            $table->uuid('entity_id');
+            $table->uuid('entity_id')->constrained();
             $table->string('type')->index();
 
             $table->timestampsTz();
@@ -32,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('media');
+        Schema::dropIfExists('medias');
     }
 };

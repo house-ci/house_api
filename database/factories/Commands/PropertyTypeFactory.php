@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\Commands;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -17,7 +17,9 @@ class PropertyTypeFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'id' => fake()->uuid(),
+            'name' => strtoupper(fake()->word()),
+            'description' => fake()->sentence(5),
         ];
     }
 }

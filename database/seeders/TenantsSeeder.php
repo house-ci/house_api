@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Commands\Tenant;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -14,6 +15,8 @@ class TenantsSeeder extends Seeder
      */
     public function run()
     {
-        //
+        Tenant::factory()
+            ->count(60)
+            ->create();
     }
 }
