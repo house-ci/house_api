@@ -27,9 +27,9 @@ class StoreRealEstateRequest extends FormRequest
             "name" => "required|string|min:3|max:120",
             "city_id" => "required|exists:cities,id",
             "property_type_id" => "required|exists:property_types,id",
-            "lot" => "string|min:2|max:50",
-            "block" => "string|min:2|max:50",
-            "description" => "string|min:3|max:120"
+            "lot" => "nullable|string|min:2|max:50",
+            "block" => "nullable|string|min:2|max:50",
+            "description" => "nullable|string|min:3|max:120"
         ];
     }
 }

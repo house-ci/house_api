@@ -60,7 +60,7 @@ class RealEstateController extends Controller
             ->withCount('assets')
             ->with('assets')
             ->first();
-        if (empty($realEstate)){
+        if (empty($realEstate)) {
             return response()->json(ApiResponse::NOTFOUND, 404);
         }
         if ($owner->id != $realEstate->owner_id) {
@@ -74,11 +74,25 @@ class RealEstateController extends Controller
      *
      * @param UpdateRealEstateRequest $request
      * @param RealEstate $realEstate
-     * @return Response
+     * @return JsonResponse
      */
     public function update(UpdateRealEstateRequest $request, RealEstate $realEstate)
     {
-        //
+        if ($realEstate?->owner_id != $request?->owner?->id) {
+            return response()->json(ApiResponse::UNAUTHORIZED, 403);
+        }
+        $data = $request->validated();
+        try {
+            foreach ($data as $key => $value) {
+                $realEstate->$key = $value;
+            }
+            $realEstate->save();
+
+        } catch (\Exception $e) {
+            Log::critical($e->getMessage(), $e->getTrace());
+            return response()->json(ApiResponse::SERVERERROR);
+        }
+        return response()->json(ApiResponse::getRessourceSuccess(200, $realEstate));
     }
 
     /**

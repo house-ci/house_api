@@ -13,7 +13,7 @@ class UpdateRealEstateRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,12 @@ class UpdateRealEstateRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            "name" => "nullable|string|min:3|max:120",
+            "city_id" => "nullable|exists:cities,id",
+            "property_type_id" => "nullable|exists:property_types,id",
+            "lot" => "nullable|string|min:2|max:50",
+            "block" => "nullable|string|min:2|max:50",
+            "description" => "nullable|string|min:3|max:120"
         ];
     }
 }
