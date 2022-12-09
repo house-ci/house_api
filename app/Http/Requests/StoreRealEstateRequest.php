@@ -29,7 +29,8 @@ class StoreRealEstateRequest extends FormRequest
             "property_type_id" => "required|exists:property_types,id",
             "lot" => "nullable|string|min:2|max:50",
             "block" => "nullable|string|min:2|max:50",
-            "description" => "nullable|string|min:3|max:120"
+            "description" => "nullable|string|min:3|max:120",
+            "number_of_floor" => "nullable|number|min:1|max:300",
         ];
     }
 }
