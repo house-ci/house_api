@@ -22,7 +22,7 @@ class RedirectIfOwnerNotExist
     public function handle(Request $request, Closure $next)
     {
         $ownerIdentifier = $request->header('X-OwnerIdentifier');
-        if (empty($ownerIdentifier) || empty($owner = Owner::where(['identifier' => $request->header('X-OwnerIdentifier')])->first())) {
+        if (empty($ownerIdentifier) || empty($owner = Owner::where(['identifier' => $request->header('X-OwnerIdentifier')])->with(['realEstates'])->first())) {
             return response()->json(ApiResponse::UNAUTHORIZED, 403);
         }
         $request->request->add(['owner' => $owner]);

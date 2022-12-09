@@ -43,6 +43,8 @@ final class OwnerController extends Controller
      */
     public function show(Request $request) :JsonResponse
     {
+        $owner = ($request->owner ?? $request->get('owner'));
+
         if (!empty($owner)) {
             return response()->json(ApiResponse::getRessourceSuccess(200, $owner));
         }
