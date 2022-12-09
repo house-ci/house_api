@@ -1,9 +1,11 @@
 <?php
 
+use App\Helpers\ApiResponse;
+use App\Http\Controllers\CityController;
+use App\Http\Controllers\CountryController;
 use App\Http\Controllers\OwnerController;
 use App\Http\Controllers\PropertyTypeController;
 use App\Http\Controllers\RealEstateController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,11 +21,15 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware' => 'shouldBeOwner'], (function () {
     Route::get('/me', [OwnerController::class, 'show']);
-    Route::get('/real_estates', [RealEstateController::class, 'index']);
-    Route::get('/real_estates/{id}', [RealEstateController::class, 'show']);
+    Route::resource('/real_estates', RealEstateController::class);;
 }));
 
-Route::get('/property_types', [PropertyTypeController::class, 'index']);
-Route::get('/countries', [\App\Http\Controllers\CountryController::class, 'index']);
-Route::get('/countries/{id}/cities', [\App\Http\Controllers\CityController::class, 'index']);
-Route::post('/owners', [OwnerController::class, 'store'])->name('create.owners');
+Route::resource('/property_types', PropertyTypeController::class);
+Route::resource('/countries', CountryController::class);
+Route::get('/countries/{id}/cities', [CityController::class, 'index']);
+Route::resource('/owners', OwnerController::class);
+
+
+Route::fallback(function () {
+    abort(404, ApiResponse::NOTFOUND);
+});

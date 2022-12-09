@@ -15,9 +15,9 @@ return new class extends Migration
     {
         Schema::create('real_estates', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('name')->unique();
+            $table->string('name');
             $table->string('description')->nullable();
-            $table->integer('number_of_floor');
+            $table->integer('number_of_floor')->nullable()->default(1);
             $table->string('lot')->nullable();
             $table->string('block')->nullable();
             $table->foreignUuid('city_id')->constrained();

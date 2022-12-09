@@ -2,14 +2,17 @@
 
 namespace App\Models\Commands;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class RealEstate extends Model
 {
     use HasFactory;
+    use HasUuids;
 
     protected $keyType = 'string';
+    protected $fillable = ["name", "number_of_floor", "city_id", "property_type_id", "lot", "block", "description", "owner_id"];
 
     public function owner()
     {

@@ -13,7 +13,7 @@ class StoreRealEstateRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,12 @@ class StoreRealEstateRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            "name" => "required|string|min:3|max:120",
+            "city_id" => "required|exists:cities,id",
+            "property_type_id" => "required|exists:property_types,id",
+            "lot" => "string|min:2|max:50",
+            "block" => "string|min:2|max:50",
+            "description" => "string|min:3|max:120"
         ];
     }
 }

@@ -8,6 +8,8 @@ use App\Http\Requests\UpdateRealEstateRequest;
 use App\Models\Commands\RealEstate;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 
 class RealEstateController extends Controller
 {
@@ -26,30 +28,29 @@ class RealEstateController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
-     * @param \App\Http\Requests\StoreRealEstateRequest $request
-     * @return \Illuminate\Http\Response
+     * @param StoreRealEstateRequest $request
+     * @return JsonResponse
      */
     public function store(StoreRealEstateRequest $request)
     {
-        //
+        $data = $request->validated();
+        try {
+            $data['owner_id'] = $request->owner->id;
+            $estate = RealEstate::create($data);
+        } catch (\Exception $e) {
+            Log::critical($e->getMessage(), $e->getTrace());
+            return response()->json(ApiResponse::SERVERERROR);
+        }
+        return response()->json(ApiResponse::getRessourceSuccess(201, $estate));
     }
 
     /**
      * Display the specified resource.
      *
-     * @param \App\Models\Commands\RealEstate $realEstate
+     * @param string $realEstateId
+     * @param Request $request
      * @return JsonResponse
      */
     public function show(string $realEstateId, Request $request)
@@ -66,22 +67,11 @@ class RealEstateController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param \App\Models\Commands\RealEstate $realEstate
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(RealEstate $realEstate)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
-     * @param \App\Http\Requests\UpdateRealEstateRequest $request
-     * @param \App\Models\Commands\RealEstate $realEstate
-     * @return \Illuminate\Http\Response
+     * @param UpdateRealEstateRequest $request
+     * @param RealEstate $realEstate
+     * @return Response
      */
     public function update(UpdateRealEstateRequest $request, RealEstate $realEstate)
     {
@@ -91,8 +81,8 @@ class RealEstateController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param \App\Models\Commands\RealEstate $realEstate
-     * @return \Illuminate\Http\Response
+     * @param RealEstate $realEstate
+     * @return Response
      */
     public function destroy(RealEstate $realEstate)
     {
