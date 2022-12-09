@@ -25,6 +25,7 @@ return new class extends Migration {
             $table->foreignUuid('real_estate_id')->constrained();
 
             $table->timestampsTz();
+            $table->softDeletesTz();
         });
     }
 

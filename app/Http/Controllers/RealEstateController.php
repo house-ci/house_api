@@ -60,6 +60,9 @@ class RealEstateController extends Controller
             ->withCount('assets')
             ->with('assets')
             ->first();
+        if (empty($realEstate)){
+            return response()->json(ApiResponse::NOTFOUND, 404);
+        }
         if ($owner->id != $realEstate->owner_id) {
             return response()->json(ApiResponse::UNAUTHORIZED, 403);
         }

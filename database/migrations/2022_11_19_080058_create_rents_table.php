@@ -25,6 +25,7 @@ return new class extends Migration {
             $table->foreignUuid('leasing_id')->constrained();
 
             $table->timestampsTz();
+            $table->softDeletesTz();
         });
     }
 
