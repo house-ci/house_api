@@ -15,13 +15,13 @@ return new class extends Migration {
         Schema::create('assets', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->integer('number_of_rooms')->default(1);
-            $table->string('description');
+            $table->string('description')->nullable();
             $table->string('door_number')->index();
             $table->boolean('is_available')->default(true);
-            $table->unsignedDouble('amount');
+            $table->unsignedDouble('amount')->default(0);
             $table->string('currency')->default('XOF');
             $table->string('payment_deadline_day')->default('5');
-            $table->json('extras');
+            $table->json('extras')->nullable();
             $table->foreignUuid('real_estate_id')->constrained();
 
             $table->timestampsTz();

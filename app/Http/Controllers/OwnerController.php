@@ -6,7 +6,6 @@ use App\Helpers\ApiResponse;
 use App\Http\Requests\StoreOwnerRequest;
 use App\Http\Requests\UpdateOwnerRequest;
 use App\Models\Commands\Owner;
-use Domain\Interfaces\CreateOwnerResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -21,18 +20,17 @@ final class OwnerController extends Controller
      */
     public function store(StoreOwnerRequest $request): JsonResponse
     {
-        $code = 201;
-        $error = 'An Error Occurred while storing';
+
         try {
             $owner = Owner::create($request->validated());
             if ($owner) {
-                return response()->json($owner, $code);
+                return response()->json(ApiResponse::getRessourceSuccess(201, $owner), 201);
             }
         } catch (\Exception $e) {
-            $code = 500;
             info($e->getMessage());
         }
-        return response()->json($error, $code);
+        $error = 'An Error Occurred while storing';
+        return response()->json(ApiResponse::error(500, $error), 500);
     }
 
     /**

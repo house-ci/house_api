@@ -1,8 +1,10 @@
 <?php
 
 use App\Helpers\ApiResponse;
+use App\Http\Controllers\AssetController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\CountryController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OwnerController;
 use App\Http\Controllers\PropertyTypeController;
 use App\Http\Controllers\RealEstateController;
@@ -19,10 +21,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::group(['middleware' => 'shouldBeOwner'], (function () {
-    Route::get('/me', [OwnerController::class, 'show']);
-    Route::resource('/real_estates', RealEstateController::class);;
-}));
+Route::group(
+    ['middleware' => 'shouldBeOwner'],
+    (function () {
+        Route::get('/me', [OwnerController::class, 'show']);
+        Route::get('/dashboard', [DashboardController::class, 'index']);
+        Route::resource('/real_estates', RealEstateController::class);
+        Route::resource('/real_estates/{id}/assets', AssetController::class);
+    }));
 
 Route::resource('/property_types', PropertyTypeController::class);
 Route::resource('/countries', CountryController::class);

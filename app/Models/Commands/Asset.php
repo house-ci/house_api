@@ -2,15 +2,21 @@
 
 namespace App\Models\Commands;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Asset extends Model
 {
     use HasFactory;
+    use HasUuids;
 
     protected $keyType = 'string';
 
+    protected $fillable = [
+        'number_of_rooms', 'description', 'door_number', 'is_available', 'amount', 'currency', 'payment_deadline_day',
+        'extras', 'real_estate_id'
+    ];
     public function leasings()
     {
         return $this->hasMany(Leasing::class);
