@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use App\Http\Middleware\ForceJsonResponse;
+use App\Http\Middleware\LanguageChecker;
 use App\Http\Middleware\RedirectIfOwnerNotExist;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
@@ -38,12 +39,14 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            'internalization:web'
         ],
 
         'api' => [
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             'throttle:api',
             'forceJsonResponse:api',
+            'internalization:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
     ];
@@ -68,5 +71,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'shouldBeOwner' => RedirectIfOwnerNotExist::class,
         'forceJsonResponse' => ForceJsonResponse::class,
+        'internalization' => LanguageChecker::class,
     ];
 }

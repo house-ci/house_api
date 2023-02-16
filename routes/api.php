@@ -5,6 +5,7 @@ use App\Http\Controllers\AssetController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\StaticFieldController;
 use App\Http\Controllers\OwnerController;
 use App\Http\Controllers\PropertyTypeController;
 use App\Http\Controllers\RealEstateController;
@@ -31,6 +32,9 @@ Route::group(
     }));
 
 Route::resource('/property_types', PropertyTypeController::class);
+Route::get('/document_types', [StaticFieldController::class, 'documentTypes']);
+Route::get('/marital_status', [StaticFieldController::class, 'maritalStatus']);
+Route::get('/genders', [StaticFieldController::class, 'gender']);
 Route::resource('/countries', CountryController::class);
 Route::get('/countries/{id}/cities', [CityController::class, 'index']);
 Route::resource('/owners', OwnerController::class);
