@@ -23,6 +23,7 @@ return new class extends Migration {
             $table->string('gender')->nullable();
             $table->string('nationality')->nullable();
             $table->string('marital_status')->nullable();
+            $table->foreignUuid('owner_id')->constrained();
 
             $table->timestampsTz();
             $table->softDeletesTz();
