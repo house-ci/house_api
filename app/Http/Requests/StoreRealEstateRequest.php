@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreRealEstateRequest extends FormRequest
 {
@@ -24,7 +25,13 @@ class StoreRealEstateRequest extends FormRequest
     public function rules()
     {
         return [
-            "name" => "required|string|min:3|max:120",
+            "name" =>  [
+                'required',
+                'min:3',
+                'max:120',
+                Rule::unique('real_estates')
+                    ->where('owner_id', $this->owner->id)
+            ],
             "city_id" => "required|exists:cities,id",
             "property_type_id" => "required|exists:property_types,id",
             "lot" => "nullable|string|min:2|max:50",
