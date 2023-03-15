@@ -13,7 +13,7 @@ class StoreTenantsRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,15 @@ class StoreTenantsRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            "first_name"=>"required|max:100",
+            "last_name"=>"required|max:150",
+            "document_type"=>"nullable",
+            "document_id"=>"nullable",
+            "phone_number"=>"nullable",
+            "profession"=>"nullable",
+            "gender"=>"nullable",
+            "nationality"=>"nullable",
+            "marital_status"=>"nullable",
         ];
     }
 }

@@ -9,6 +9,7 @@ use App\Http\Controllers\StaticFieldController;
 use App\Http\Controllers\OwnerController;
 use App\Http\Controllers\PropertyTypeController;
 use App\Http\Controllers\RealEstateController;
+use App\Http\Controllers\TenantsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -28,6 +29,7 @@ Route::group(
         Route::get('/me', [OwnerController::class, 'show']);
         Route::get('/dashboard', [DashboardController::class, 'index']);
         Route::resource('/real_estates', RealEstateController::class);
+        Route::resource('/tenants', TenantsController::class);
         Route::resource('/real_estates/{id}/assets', AssetController::class);
     }));
 

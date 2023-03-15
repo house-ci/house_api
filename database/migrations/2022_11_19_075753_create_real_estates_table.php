@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->string('description')->nullable();
             $table->integer('number_of_floor')->nullable()->default(1);
             $table->string('lot')->nullable();
+            $table->string('i_lot')->nullable();
             $table->string('block')->nullable();
             $table->foreignUuid('city_id')->constrained();
             $table->foreignUuid('property_type_id')->constrained();

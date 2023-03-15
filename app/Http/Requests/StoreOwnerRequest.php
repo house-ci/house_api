@@ -25,8 +25,8 @@ class StoreOwnerRequest extends FormRequest
     {
         return [
             "full_name" => "string|min:2|max:120",
-            "email" => "email|min:2|max:120",
-            "phone_number" => "string|min:8|max:20|nullable",
+            "email" => "unique:owners,email,|min:2|max:120",
+            "phone_number" => "unique:owners,phone_number,string|min:8|max:20|nullable",
             "identifier" => "string"
         ];
     }
