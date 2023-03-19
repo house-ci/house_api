@@ -13,7 +13,7 @@ class UpdateLeasingRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,9 @@ class UpdateLeasingRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            "started_on"=>"required|date",
+//            "amount"=>"required|number|min:0",
+//            "payment_deadline_day"=>"required|string|min:1|max:30",
         ];
     }
 }

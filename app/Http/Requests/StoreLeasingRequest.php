@@ -13,7 +13,7 @@ class StoreLeasingRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,12 @@ class StoreLeasingRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            "started_on"=>"required|date",
+            "ended_on"=>"nullable|date",
+            "amount"=>"required",
+            "payment_deadline_day"=>"required",
+            "currency"=>"nullable",
+            "is_active"=>"nullable",
         ];
     }
 }
