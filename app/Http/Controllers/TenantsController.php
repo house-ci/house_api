@@ -7,6 +7,7 @@ use App\Http\Requests\StoreTenantsRequest;
 use App\Http\Requests\UpdateTenantsRequest;
 use App\Models\Commands\RealEstate;
 use App\Models\Commands\Tenant;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class TenantsController extends Controller
@@ -16,9 +17,12 @@ class TenantsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request  $request)
     {
-        //
+        $owner = $request->get('owner');
+        $tenants = Tenant::where('owner_id', $owner->id)
+            ->get();
+        return response()->json(ApiResponse::getRessourceSuccess(200, $tenants));
     }
 
     /**

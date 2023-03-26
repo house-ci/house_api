@@ -12,6 +12,7 @@ class Leasing extends Model
     use HasFactory, HasUuids, SoftDeletes;
 
     protected $keyType = 'string';
+    protected $fillable=['started_on','ended_on','amount','currency','payment_deadline_day','agreement_url','is_active','asset_id','tenant_id'];
 
     public function rents()
     {

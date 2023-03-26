@@ -10,6 +10,7 @@ use App\Http\Controllers\OwnerController;
 use App\Http\Controllers\PropertyTypeController;
 use App\Http\Controllers\RealEstateController;
 use App\Http\Controllers\TenantsController;
+use App\Http\Controllers\LeasingController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -31,6 +32,9 @@ Route::group(
         Route::resource('/real_estates', RealEstateController::class);
         Route::resource('/tenants', TenantsController::class);
         Route::resource('/real_estates/{id}/assets', AssetController::class);
+        Route::post('/leasing/{tenantId}/{assetId}', [LeasingController::class,'store']);
+        Route::resource('/leasing', LeasingController::class);
+        Route::put('/leasing/end_rental/{leasingId}', [LeasingController::class,'endRental']);
     }));
 
 Route::resource('/property_types', PropertyTypeController::class);
