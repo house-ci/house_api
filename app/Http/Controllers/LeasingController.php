@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Helpers\ApiResponse;
 use App\Http\Requests\StoreLeasingRequest;
 use App\Http\Requests\UpdateLeasingRequest;
+use App\Http\Requests\EndRentalRequest;
 use App\Models\Commands\Leasing;
 use App\Models\Commands\Tenant;
+use App\Models\Commands\Asset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -33,7 +35,7 @@ class LeasingController extends Controller
         //
     }
 
-    public function endRental($leasingId, Request $request)
+    public function endRental($leasingId,Request $request)
     {
         $leasing = Leasing::where('id', $leasingId)->first();
         if (empty($leasing)) {
@@ -46,7 +48,8 @@ class LeasingController extends Controller
         $ownerId = $request?->owner?->id;
         $asset = DB::table('assets')
             ->join('leasings', 'leasings.asset_id', '=', 'assets.id')
-            ->where('leasings.owner_id', '=', $ownerId)
+            ->join('real_estates','real_estates.id','=','assets.real_estate_id')
+            ->where('real_estates.owner_id', '=', $ownerId)
             ->where('leasings.id', '=', $leasingId)
             ->select('assets.*')
             ->first();
@@ -58,8 +61,7 @@ class LeasingController extends Controller
         try {
             $leasing->ended_on = $request->ended_on;
             $leasing->save();
-            $asset->is_available = true;
-            $asset->save();
+            Asset::where('id',$asset->id)->update(['is_available'=>true]);
             DB::commit();
         } catch (\Exception $ex) {
             DB::rollback();
