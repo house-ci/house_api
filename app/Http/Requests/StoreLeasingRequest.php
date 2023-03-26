@@ -24,10 +24,10 @@ class StoreLeasingRequest extends FormRequest
     public function rules()
     {
         return [
-            "started_on"=>"required|date",
+            "started_on"=>"nullable|date",
             "ended_on"=>"nullable|date",
-            "amount"=>"required",
-            "payment_deadline_day"=>"required",
+            "amount"=>"nullable",
+            "payment_deadline_day"=>"nullable",
             "currency"=>"nullable",
             "is_active"=>"nullable",
         ];

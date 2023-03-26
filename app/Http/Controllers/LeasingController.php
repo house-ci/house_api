@@ -33,15 +33,15 @@ class LeasingController extends Controller
         //
     }
 
-    public function end_rental($leasingId, Request $request)
+    public function endRental($leasingId, Request $request)
     {
         $leasing = Leasing::where('id', $leasingId)->first();
         if (empty($leasing)) {
             $error = "Leasing does not exist!";
-            return response()->json(ApiResponse::error(500, $error), 500);
+            return response()->json(ApiResponse::error(404, $error), 404);
         } elseif ($leasing->ended_on != null) {
             $error = "Leasing already ended!";
-            return response()->json(ApiResponse::error(500, $error), 500);
+            return response()->json(ApiResponse::error(404, $error), 404);
         }
         $ownerId = $request?->owner?->id;
         $asset = DB::table('assets')
@@ -52,19 +52,21 @@ class LeasingController extends Controller
             ->first();
         if (empty($asset)) {
             $error = "Asset not found!";
-            return response()->json(ApiResponse::error(500, $error), 500);
+            return response()->json(ApiResponse::error(404, $error), 404);
         }
-        DB::transaction(function () use ($leasing, $request, $asset) {
-            //end the rental
+        DB::beginTransaction();
+        try {
             $leasing->ended_on = $request->ended_on;
             $leasing->save();
             $asset->is_available = true;
             $asset->save();
-        });
+            DB::commit();
+        } catch (\Exception $ex) {
+            DB::rollback();
+            return response()->json(ApiResponse::error(500, $ex->getMessage()), 500);
+        }
         // release the house
-
-
-        return response()->json(ApiResponse::getRessourceSuccess(201, $leasing));
+        return response()->json(ApiResponse::getRessourceSuccess(200, $leasing));
     }
 
     /**
@@ -79,14 +81,14 @@ class LeasingController extends Controller
         $leasing = Leasing::where([['tenant_id', $tenantId], ['asset_id', $assetId], ['is_active', true]])->first();
         if (!empty($leasing)) {
             $error = "Leasing already exist!";
-            return response()->json(ApiResponse::error(500, $error), 500);
+            return response()->json(ApiResponse::error(404, $error), 404);
         }
         $ownerId = $request?->owner?->id;
         //Tenant
         $tenant = Tenant::where([['id', $tenantId], ['owner_id', $ownerId]])->first();
         if (empty($tenant)) {
             $error = "tenant not found!";
-            return response()->json(ApiResponse::error(500, $error), 500);
+            return response()->json(ApiResponse::error(404, $error), 404);
         }
         //Asset
         $asset = DB::table('assets')
@@ -97,7 +99,7 @@ class LeasingController extends Controller
             ->first();
         if (empty($asset)) {
             $error = "Asset not found!";
-            return response()->json(ApiResponse::error(500, $error), 500);
+            return response()->json(ApiResponse::error(404, $error), 404);
         }
         $data = $request->validated();
 
