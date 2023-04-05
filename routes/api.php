@@ -32,9 +32,9 @@ Route::group(
         Route::resource('/real_estates', RealEstateController::class);
         Route::resource('/tenants', TenantsController::class);
         Route::resource('/real_estates/{id}/assets', AssetController::class);
-        Route::post('/leasing/{tenantId}/{assetId}', [LeasingController::class,'store']);
-        Route::resource('/leasing', LeasingController::class);
-        Route::put('/leasing/end_rental/{leasingId}', [LeasingController::class,'endRental']);
+        Route::post('/leasings/{tenantId}/{assetId}', [LeasingController::class,'store']);
+        Route::resource('/leasings', LeasingController::class);
+        Route::put('/leasings/end_rental/{leasingId}', [LeasingController::class,'endRental']);
     }));
 
 Route::resource('/property_types', PropertyTypeController::class);

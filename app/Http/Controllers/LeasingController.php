@@ -7,6 +7,7 @@ use App\Http\Requests\StoreLeasingRequest;
 use App\Http\Requests\UpdateLeasingRequest;
 use App\Http\Requests\EndRentalRequest;
 use App\Models\Commands\Leasing;
+use App\Models\Commands\RealEstate;
 use App\Models\Commands\Tenant;
 use App\Models\Commands\Asset;
 use Illuminate\Http\Request;
@@ -20,9 +21,15 @@ class LeasingController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $owner = $request->get('owner');
+        $leasings = DB::table('leasings')
+            ->join('tenants', 'tenants.id', '=', 'leasings.tenant_id')
+            ->where('tenants.owner_id', '=', $owner->id)
+            ->select('leasings.*')
+            ->get();
+        return response()->json(ApiResponse::getRessourceSuccess(200, $leasings));
     }
 
     /**

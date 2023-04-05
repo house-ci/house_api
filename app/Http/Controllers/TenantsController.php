@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\ApiResponse;
 use App\Http\Requests\StoreTenantsRequest;
 use App\Http\Requests\UpdateTenantsRequest;
+use App\Models\Commands\Leasing;
 use App\Models\Commands\RealEstate;
 use App\Models\Commands\Tenant;
 use Illuminate\Http\Request;
@@ -45,6 +46,7 @@ class TenantsController extends Controller
     {
         $data = $request->validated();
         try {
+
             $data['owner_id'] = $request->owner->id;
             $estate = Tenant::create($data);
         } catch (\Exception $e) {
@@ -108,6 +110,6 @@ class TenantsController extends Controller
      */
     public function destroy(Tenant $tenants)
     {
-        //
+        Tenant::destroy($tenants->id);
     }
 }

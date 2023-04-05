@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateTenantsRequest extends FormRequest
 {
@@ -28,7 +29,6 @@ class UpdateTenantsRequest extends FormRequest
             "last_name"=>"required|max:150",
             "document_type"=>"nullable",
             "document_id"=>"nullable",
-            "phone_number"=>"nullable",
             "profession"=>"nullable",
             "gender"=>"nullable",
             "nationality"=>"nullable",

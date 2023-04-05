@@ -103,6 +103,6 @@ class RealEstateController extends Controller
      */
     public function destroy(RealEstate $realEstate)
     {
-        //
+        RealEstate::destroy($realEstate->id);
     }
 }
