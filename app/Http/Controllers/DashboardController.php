@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponse;
-use App\Models\Queries\Tenant;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -19,12 +19,11 @@ class DashboardController extends Controller
     public function index(Request $request)
     {
         $owner = ($request->owner ?? $request->get('owner'));
-
-        $tenants = Tenant::where()
+        $tenants = DB::table('tenants')
             ->join('leasings', 'tenants.id', '=', 'leasings.id')
             ->join('assets', 'assets.id', '=', 'leasings.id')
             ->join('real_estates', 'real_estates.id', '=', 'leasings.id')
-            ->join('owners', 'owners.id', '=', 'leasings.id')
+            ->join('owners', 'owners.id', '=', 'real_estates.owner_id')
             ->get();
 
 

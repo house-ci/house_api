@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreTenantsRequest extends FormRequest
 {
@@ -28,7 +29,15 @@ class StoreTenantsRequest extends FormRequest
             "last_name"=>"required|max:150",
             "document_type"=>"nullable",
             "document_id"=>"nullable",
-            "phone_number"=>"nullable",
+            "phone_number" =>  [
+                            'required',
+                            'min:8',
+                            'max:15',
+                            Rule::unique('tenants')
+                                ->where('phone_number', $this->phone_number)
+                                ->where('first_name', $this->first_name)
+                                ->where('last_name', $this->last_name)
+                        ],
             "profession"=>"nullable",
             "gender"=>"nullable",
             "nationality"=>"nullable",
