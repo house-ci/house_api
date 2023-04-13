@@ -2,6 +2,9 @@
 
 namespace App\Exceptions;
 
+use App\Helpers\ApiResponse;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 
@@ -43,8 +46,16 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
-        $this->reportable(function (Throwable $e) {
+//        $this->reportable(function ($e) {
 //
-        });
+//        });
+    }
+    public function render($request, Throwable $exception)
+    {
+        if ($exception instanceof ModelNotFoundException || $exception instanceof NotFoundHttpException) {
+            return response()->json(ApiResponse::NOTFOUND, 404);
+        }
+
+        return parent::render($request, $exception);
     }
 }
