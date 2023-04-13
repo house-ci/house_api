@@ -85,21 +85,21 @@ class TenantsController extends Controller
      * @param \App\Models\Commands\Tenant $tenants
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateTenantsRequest $request, Tenant $tenants)
+    public function update(UpdateTenantsRequest $request, Tenant $tenant)
     {
         $data = $request->validated();
         $data['owner_id'] = $request?->owner?->id;
         try {
             foreach ($data as $key => $value) {
-                $tenants->$key = $value;
+                $tenant->$key = $value;
             }
-            $tenants->save();
+            $tenant->save();
 
         } catch (\Exception $e) {
             Log::critical($e->getMessage(), $e->getTrace());
             return response()->json(ApiResponse::SERVERERROR);
         }
-        return response()->json(ApiResponse::getRessourceSuccess(200, $tenants));
+        return response()->json(ApiResponse::getRessourceSuccess(200, $tenant));
     }
 
     /**
@@ -108,8 +108,8 @@ class TenantsController extends Controller
      * @param \App\Models\Commands\Tenant $tenants
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Tenant $tenants)
+    public function destroy(Tenant $tenant)
     {
-        Tenant::destroy($tenants->id);
+        Tenant::destroy($tenant->id);
     }
 }
