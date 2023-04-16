@@ -35,6 +35,7 @@ Route::group(
         Route::post('/leasings/{tenantId}/{assetId}', [LeasingController::class,'store']);
         Route::resource('/leasings', LeasingController::class);
         Route::put('/leasings/end_rental/{leasingId}', [LeasingController::class,'endRental']);
+        Route::get('/asset/{assetId}/leasings', [LeasingController::class,'getAssetLessings']);
     }));
 
 Route::resource('/property_types', PropertyTypeController::class);

@@ -31,6 +31,18 @@ class LeasingController extends Controller
             ->get();
         return response()->json(ApiResponse::getRessourceSuccess(200, $leasings));
     }
+    public function getAssetLessings(string $assetId,Request $request)
+    {
+        $owner = $request->get('owner');
+        $leasings = DB::table('leasings')
+            ->join('tenants', 'tenants.id', '=', 'leasings.tenant_id')
+            ->join('assets', 'assets.id', '=', 'leasings.asset_id')
+            ->where('tenants.owner_id', '=', $owner->id)
+            ->where('assets.id', '=', $assetId)
+            ->select('leasings.*')
+            ->get();
+        return response()->json(ApiResponse::getRessourceSuccess(200, $leasings));
+    }
 
     /**
      * Show the form for creating a new resource.
