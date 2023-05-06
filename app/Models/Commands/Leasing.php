@@ -12,7 +12,7 @@ class Leasing extends Model
     use HasFactory, HasUuids, SoftDeletes;
 
     protected $keyType = 'string';
-    protected $fillable=['started_on','ended_on','amount','currency','payment_deadline_day','agreement_url','is_active','asset_id','tenant_id'];
+    protected $fillable=['started_on','ended_on','amount','currency','payment_deadline_day','agreement_url','is_active','asset_id','tenant_id','type','next_leasing_period'];
 
     public function rents()
     {
@@ -28,4 +28,6 @@ class Leasing extends Model
     {
         return $this->belongsTo(Tenant::class);
     }
+    const POSTPAY='POSTPAY';
+    const PREPAY='PREPAY';
 }

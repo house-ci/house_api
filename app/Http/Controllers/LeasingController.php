@@ -7,7 +7,6 @@ use App\Http\Requests\StoreLeasingRequest;
 use App\Http\Requests\UpdateLeasingRequest;
 use App\Http\Requests\EndRentalRequest;
 use App\Models\Commands\Leasing;
-use App\Models\Commands\RealEstate;
 use App\Models\Commands\Tenant;
 use App\Models\Commands\Asset;
 use Illuminate\Http\Request;
@@ -27,6 +26,7 @@ class LeasingController extends Controller
         $leasings = DB::table('leasings')
             ->join('tenants', 'tenants.id', '=', 'leasings.tenant_id')
             ->where('tenants.owner_id', '=', $owner->id)
+            ->where('leasings.ended_on', '=',null)
             ->select('leasings.*')
             ->get();
         return response()->json(ApiResponse::getRessourceSuccess(200, $leasings));
@@ -39,6 +39,20 @@ class LeasingController extends Controller
             ->join('assets', 'assets.id', '=', 'leasings.asset_id')
             ->where('tenants.owner_id', '=', $owner->id)
             ->where('assets.id', '=', $assetId)
+            ->where('leasings.ended_on', '=',null)
+            ->select('leasings.*')
+            ->get();
+        return response()->json(ApiResponse::getRessourceSuccess(200, $leasings));
+    }
+    public function getAssetOldLessings(string $assetId,Request $request)
+    {
+        $owner = $request->get('owner');
+        $leasings = DB::table('leasings')
+            ->join('tenants', 'tenants.id', '=', 'leasings.tenant_id')
+            ->join('assets', 'assets.id', '=', 'leasings.asset_id')
+            ->where('tenants.owner_id', '=', $owner->id)
+            ->where('assets.id', '=', $assetId)
+            ->where('leasings.ended_on', '<>',null)
             ->select('leasings.*')
             ->get();
         return response()->json(ApiResponse::getRessourceSuccess(200, $leasings));
@@ -99,7 +113,7 @@ class LeasingController extends Controller
     public function store($tenantId, $assetId, StoreLeasingRequest $request)
     {
         //Leasing exist?
-        $leasing = Leasing::where([['tenant_id', $tenantId], ['asset_id', $assetId], ['is_active', true]])->first();
+        $leasing = Leasing::where([['tenant_id', $tenantId], ['asset_id', $assetId], ['is_active', true],['ended_on',null]])->first();
         if (!empty($leasing)) {
             $error = "Leasing already exist!";
             return response()->json(ApiResponse::error(404, $error), 404);
