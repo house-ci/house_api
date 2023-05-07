@@ -41,8 +41,9 @@ Route::group(
         Route::post('/leasings/{tenantId}/{assetId}', [LeasingController::class,'store']);
         Route::resource('/leasings', LeasingController::class);
         Route::put('/leasings/end_rental/{leasingId}', [LeasingController::class,'endRental']);
-        Route::get('/asset/{assetId}/leasings', [LeasingController::class,'getAssetLessings']);
-        Route::get('/asset/{assetId}/old-leasings', [LeasingController::class,'getAssetOldLessings']);
+        Route::put('/leasings/{leasingId}/change_penality_mode', [LeasingController::class,'changePenalityMode']);
+        Route::get('/assets/{assetId}/leasings', [LeasingController::class,'getAssetLessings']);
+        Route::get('/assets/{assetId}/old_leasings', [LeasingController::class,'getAssetOldLessings']);
         Route::get('/rents/{id}/unpaid', [RentController::class,'getRentsUnpaid']);
         Route::get('/rents/{id}/paid', [RentController::class,'getRentsPaid']);
         Route::get('/payments/{leasingId}', [PaymentController::class,'leasingPayements']);

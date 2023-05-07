@@ -7,6 +7,7 @@ use App\Http\Requests\StoreLeasingRequest;
 use App\Http\Requests\UpdateLeasingRequest;
 use App\Http\Requests\EndRentalRequest;
 use App\Models\Commands\Leasing;
+use App\Models\Commands\Rent;
 use App\Models\Commands\Tenant;
 use App\Models\Commands\Asset;
 use Illuminate\Http\Request;
@@ -68,6 +69,29 @@ class LeasingController extends Controller
         //
     }
 
+    public function changePenalityMode($leasingId,Request $request){
+        $leasing = Leasing::where('id', $leasingId)->first();
+        if (empty($leasing)) {
+            $error = "Leasing does not exist!";
+            return response()->json(ApiResponse::error(404, $error), 404);
+        }
+        $ownerId = $request?->owner?->id;
+        $asset = DB::table('assets')
+            ->join('leasings', 'leasings.asset_id', '=', 'assets.id')
+            ->join('real_estates','real_estates.id','=','assets.real_estate_id')
+            ->where('real_estates.owner_id', '=', $ownerId)
+            ->where('leasings.id', '=', $leasing->id)
+            ->select('assets.*')
+            ->first();
+        if (empty($asset)) {
+            $error = "Asset not found!";
+            return response()->json(ApiResponse::error(404, $error), 404);
+        }
+        $leasing->is_penalized=!($leasing->is_penalized);
+        $leasing->save();
+        return response()->json(ApiResponse::getRessourceSuccess(200, $leasing));
+    }
+
     public function endRental($leasingId,Request $request)
     {
         $leasing = Leasing::where('id', $leasingId)->first();
@@ -88,6 +112,13 @@ class LeasingController extends Controller
             ->first();
         if (empty($asset)) {
             $error = "Asset not found!";
+            return response()->json(ApiResponse::error(404, $error), 404);
+        }
+        $lastRent=Rent::where('leasing_id',$leasingId)
+            ->orderBy('created_at', 'DESC')
+            ->first();
+        if(!empty($lastRent) && (strtotime($request->ended_on)<strtotime($lastRent->created_at))){
+            $error = "The end date must be greater than the date of the last rental !";
             return response()->json(ApiResponse::error(404, $error), 404);
         }
         DB::beginTransaction();
@@ -136,6 +167,17 @@ class LeasingController extends Controller
             $error = "Asset not found!";
             return response()->json(ApiResponse::error(404, $error), 404);
         }
+
+        $lastRent = Rent::join('leasings','leasings.id','rents.leasing_id')
+            ->join('assets', 'assets.id', '=', 'leasings.asset_id')
+            ->where('assets.id', '=', $assetId)
+            ->orderBy('rents.created_at', 'DESC')
+            ->first();
+        if(!empty($lastRent) && (strtotime($request->started_on)<=strtotime($lastRent->created_at))){
+            $error = "the start date must be greater than the date of the last rental!";
+            return response()->json(ApiResponse::error(404, $error), 404);
+        }
+
         $data = $request->validated();
 
         try {

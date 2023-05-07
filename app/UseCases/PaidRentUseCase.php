@@ -3,6 +3,7 @@
 namespace App\UseCases;
 
 use App\Helpers\Helpers;
+use App\Models\Commands\Asset;
 use App\Models\Commands\Leasing;
 use App\Models\Commands\Payment;
 use App\Models\Commands\PaymentDetail;
@@ -10,28 +11,47 @@ use App\Models\Commands\Rent;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
-class RentingUseCase
+class PaidRentUseCase
 {
-    public static function applayPenality($assetId)
+    public static function manageAPenality($assetId): void
     {
         $currentDate = Carbon::now();
         $dateNow = Carbon::parse($currentDate);
 
-        $rents = Rent::join('leasings','leasings.id','=','rents.leasing_id')
+        //apply a penality
+        $rentsForApplyPenality = Rent::join('leasings','leasings.id','=','rents.leasing_id')
             ->join('assets', 'assets.id','=', 'leasings.asset_id')
+            ->where('leasings.is_penalized',true)
+            ->where('rents.is_apply_penality',true)
             ->where('assets.id',$assetId)
             ->where('rents.status','PENDING')
             ->where('penality','=',0)
             ->whereDate('deadline','<',$dateNow->format('Y-m-d'))
             ->select('rents.*')
             ->get();
-        foreach ($rents as $rent) {
-            $rent->penality=(($rent->amount-$rent->amount_paid) * (10/100));
+        foreach ($rentsForApplyPenality as $rent) {
+            $penality=Helpers::roundUpTo(round(($rent->amount-$rent->amount_paid) * (10/100)),100);
+            $rent->penality=$penality;
+            $rent->save();
+        }
+        //remove the penality
+        $rentsForRemovePenality = Rent::join('leasings','leasings.id','=','rents.leasing_id')
+            ->join('assets', 'assets.id','=', 'leasings.asset_id')
+            ->where('leasings.is_penalized',false)
+            ->orWhere('rents.is_apply_penality',false)
+            ->where('assets.id',$assetId)
+            ->where('rents.status','PENDING')
+            ->where('penality','<>',0)
+            ->whereDate('deadline','<',$dateNow->format('Y-m-d'))
+            ->select('rents.*')
+            ->get();
+        foreach ($rentsForRemovePenality as $rent) {
+            $rent->penality=0;
             $rent->save();
         }
     }
 
-    public static function generateDetail(Rent $rent, $amount, Payment $payment)
+    public static function generateDetails(Rent $rent, $amount, Payment $payment)
     {
         $paymentBalance = $amount;
         $rentBalance = $rent->amount - $rent->amount_paid;
@@ -95,22 +115,32 @@ class RentingUseCase
             ->orderBy('rents.year', 'ASC')
             ->orderBy('rents.month', 'ASC')
             ->get();
+        if($rents->isEmpty()){
+            $currentDate = Carbon::now();
+            $dateNow = Carbon::parse($currentDate);
+            $leasing = Leasing::join('assets','assets.id','=','leasings.asset_id')
+                ->where('assets.id',$assetId)
+                ->where('leasings.ended_on', '=', null)
+                ->select('leasings.*')
+                ->orWhereDate('leasings.ended_on', '<', $dateNow->format('Y-m-d'))
+                ->first();
+            PaidRentUseCase::generateLeasings($balance,$leasing->id);
+        }
         foreach ($rents as $rent) {
             if ($balance > 0) {
-                $balance = RentingUseCase::generateDetail($rent, $balance, $payment);
+                $balance = PaidRentUseCase::generateDetails($rent, $balance, $payment);
             }
         }
         return $balance;
     }
-    public static function payRent($rentId, $amount, $payer,  $assetId)
+    public static function paidRent($rentId, $amount, $payer, $assetId): void
     {
 
         $amount = (int)$amount;
-        $payer = (empty($payer)) ? 'TENANT' : $payer;
+        $payer = (empty($payer)) ? 'OWNER' : $payer;
         try {
             //apply penality
-            RentingUseCase::applayPenality($assetId);
-//            $rent=Rent::where([['id',$rentId],['status','PENDING']])->first();
+            PaidRentUseCase::manageAPenality($assetId);
 
             $rent = Rent::join('leasings','leasings.id','=','rents.leasing_id')
                 ->join('assets', 'assets.id','=', 'leasings.asset_id')
@@ -133,13 +163,13 @@ class RentingUseCase
             $payment = Payment::create($payload);
             $paymentBalance = 0;
             if (!empty($rent) && $rent->status === Rent::PENDING) {
-                $paymentBalance = RentingUseCase::generateDetail($rent, $amount, $payment);
+                $paymentBalance = PaidRentUseCase::generateDetails($rent, $amount, $payment);
                 if ($paymentBalance > 0) {
-                    $paymentBalance=  RentingUseCase::payManyRents($assetId,$paymentBalance,$payment);
+                    $paymentBalance=  PaidRentUseCase::payManyRents($assetId,$paymentBalance,$payment);
                 }
             }
              if(empty($rent)){
-                $paymentBalance= RentingUseCase::payManyRents($assetId,$amount,$payment);
+                $paymentBalance= PaidRentUseCase::payManyRents($assetId,$amount,$payment);
             }
              if ($paymentBalance > 0) {
                 //creer  a partir du dernier rent
@@ -154,13 +184,10 @@ class RentingUseCase
                      ->first();
 
                 if(empty(!$rent)){
-                    $leasing=Leasing::where('id',$rent->leasing_id)->first();
-                    $nbrRentWhoToGenerate = ceil($paymentBalance / $leasing->amount);
-                   //generate rents
-                    RentUseCase::createRent($leasing,$nbrRentWhoToGenerate,$rent);
+                    PaidRentUseCase::generateLeasings($paymentBalance,$rent->leasing_id);
                     //payer les impayee dans l'ordre croissant la date de creation
                     //pay rents
-                    RentingUseCase::payManyRents($assetId,$paymentBalance,$payment);
+                    PaidRentUseCase::payManyRents($assetId,$paymentBalance,$payment);
                 }
             }
             // }, 5);
@@ -168,5 +195,11 @@ class RentingUseCase
             echo $e;
             Log::info($e->getMessage());
         }
+    }
+    public static function generateLeasings($paymentBalance,$leasingId){
+        $leasing=Leasing::where('id',$leasingId)->first();
+        $nbrRentWhoToGenerate = ceil($paymentBalance / $leasing->amount);
+        //generate rents
+        CreateRentUseCase::createRent($leasing,$nbrRentWhoToGenerate);
     }
 }

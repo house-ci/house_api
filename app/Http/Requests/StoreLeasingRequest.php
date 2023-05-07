@@ -27,6 +27,8 @@ class StoreLeasingRequest extends FormRequest
             "started_on"=>"nullable|date",
             "ended_on"=>"nullable|date",
             "amount"=>"nullable",
+            "type"=>"nullable",
+            "is_penalized"=>"nullable|boolean",
             "payment_deadline_day"=>"nullable",
             "currency"=>"nullable",
             "is_active"=>"nullable",

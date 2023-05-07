@@ -3,7 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Commands\Leasing;
-use App\UseCases\RentUseCase;
+use App\UseCases\CreateRentUseCase;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -32,19 +32,21 @@ class RentJob implements ShouldQueue
      */
     public function handle()
     {
-
-        Log::info('Benn here at ' . Carbon::now());
-        $currentDate = Carbon::now();
-        $dateNow = Carbon::parse($currentDate);
-        Leasing::where('next_leasing_period', '=', null)
-            ->orWhere('next_leasing_period', '=', $dateNow->format('Y-m'))
-            ->where('ended_on', '=', null)
-            ->orWhereDate('ended_on', '<', $dateNow->format('Y-m-d'))
-            ->orderBy('created_at')
-            ->chunk(100, function ($leasings): void {
-                foreach ($leasings as $leasing) {
-                    RentUseCase::createRent($leasing);
-                }
-            });
+        $currentHour = (int) date('H');
+        if ($currentHour >= 1 && $currentHour <= 6) {
+            Log::info('Execution at ' . Carbon::now());
+            $currentDate = Carbon::now();
+            $dateNow = Carbon::parse($currentDate);
+            Leasing::where('next_leasing_period', '=', null)
+                ->orWhere('next_leasing_period', '=', $dateNow->format('Y-m'))
+                ->where('ended_on', '=', null)
+                ->orWhereDate('ended_on', '<', $dateNow->format('Y-m-d'))
+                ->orderBy('created_at')
+                ->chunk(100, function ($leasings): void {
+                    foreach ($leasings as $leasing) {
+                        CreateRentUseCase::createRent($leasing);
+                    }
+                });
+        }
     }
 }

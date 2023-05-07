@@ -3,14 +3,14 @@
 namespace App\UseCases;
 
 use App\Helpers\Helpers;
+use App\Models\Commands\Asset;
 use App\Models\Commands\Leasing;
 use App\Models\Commands\Rent;
 use Carbon\Carbon;
 use DateInterval;
 use DateTime;
-use Illuminate\Support\Facades\DB;
 
-class RentUseCase
+class CreateRentUseCase
 {
     public static function createRent(Leasing $leasing, $nbrMonth = 0, Rent $rentForNext = null): array
     {
@@ -19,41 +19,45 @@ class RentUseCase
         $currentDate = Carbon::now();
         $dateNow = Carbon::parse($currentDate);
 
-        $rents = DB::table('leasings')
+        $rents = Rent::join('leasings','leasings.id','=','rents.leasing_id')
+            ->join('assets', 'assets.id','=', 'leasings.asset_id')
             ->join('tenants', 'tenants.id', '=', 'leasings.tenant_id')
-            ->join('rents', 'rents.leasing_id', '=', 'leasings.id')
             ->where('leasings.id', '=', $leasing->id)
-//            ->where('tenants.owner_id', '=', $ownerId)
             ->where('leasings.ended_on', '=', null)
             ->orWhereDate('leasings.ended_on', '<', $dateNow->format('Y-m-d'))
             ->select('rents.*')
             ->orderBy('rents.created_at', 'DESC')
             ->first();
 
+        $asset = Asset::join('leasings','leasings.asset_id','=','assets.id')
+            ->where('leasings.id', '=', $leasing->id)
+            ->select('assets.*')
+            ->first();
+
         if (empty($rents)) {
-            $rentForPay = Helpers::getDayOfMonth($paymentDeadlineDay, $leasing->started_on, $dateNow->format('Y-m-t'));
+            $rentForPay = Helpers::getDayOfMonth($paymentDeadlineDay, $leasing->started_on, $dateNow->format('Y-m-t'),$asset->frequency_in_month);
         } else if ($nbrMonth > 0 && !empty($rentForNext)) {
             $month = $rentForNext->month;
             $year = $rentForNext->year;
             $day = 1;
             $lastLeasingAt = date('Y-m-d', strtotime("$year-$month-$day"));
-            $lastLeasingDate = (new DateTime($lastLeasingAt))->add(new DateInterval('P1M'))->format('d-m-Y');
+            $lastLeasingDate = (new DateTime($lastLeasingAt))->add(new DateInterval('P'.$asset->frequency_in_month.'M'))->format('d-m-Y');
 
-            $lastLeasingEndDate = (new DateTime($lastLeasingDate))->add(new   DateInterval('P'.$nbrMonth.'M'))->format('Y-m-t');
-            $rentForPay = Helpers::getDayOfMonth($paymentDeadlineDay, $lastLeasingDate, $lastLeasingEndDate);
+            $lastLeasingEndDate = (new DateTime($lastLeasingDate))->add(new   DateInterval('P'.($asset->frequency_in_month+$nbrMonth).'M'))->format('Y-m-t');
+            $rentForPay = Helpers::getDayOfMonth($paymentDeadlineDay, $lastLeasingDate, $lastLeasingEndDate,$asset->frequency_in_month);
         } else {
             $month = $rents->month;
             $year = $rents->year;
             $day = 1;
             $lastLeasingDate = date('Y-m-d', strtotime("$year-$month-$day"));
-            $lastLeasingDate = (new DateTime($lastLeasingDate))->add(new DateInterval('P1M'))->format('d-m-Y');
+            $lastLeasingDate = (new DateTime($lastLeasingDate))->add(new DateInterval('P'.$asset->frequency_in_month.'M'))->format('d-m-Y');
 
-            $lastLeasingEndDate = (new DateTime($dateNow))->add(new   DateInterval('P1M'))->format('Y-m-t');
+            $lastLeasingEndDate = (new DateTime($dateNow))->add(new   DateInterval('P'.$asset->frequency_in_month.'M'))->format('Y-m-t');
             // add 7 days to the date
-            $rentForPay = Helpers::getDayOfMonth($paymentDeadlineDay, $lastLeasingDate, $lastLeasingEndDate);
+            $rentForPay = Helpers::getDayOfMonth($paymentDeadlineDay, $lastLeasingDate, $lastLeasingEndDate,$asset->frequency_in_month);
         }
         foreach ($rentForPay as $rentDeadLine) {
-            $rentRealDeadLine = $leasing->type == Leasing::PREPAY ? $rentDeadLine : Helpers::subtractMonth($rentDeadLine);
+            $rentRealDeadLine = $leasing->type == Leasing::PREPAY ? $rentDeadLine : Helpers::subtractMonth($rentDeadLine,$asset->frequency_in_month);
 
             $rentMonth = date('m', strtotime($rentRealDeadLine));
             $rentYear = date('Y', strtotime($rentRealDeadLine));

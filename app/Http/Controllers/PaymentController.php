@@ -7,7 +7,7 @@ use App\Http\Requests\MakePaymentRequest;
 use App\Models\Commands\Payment;
 use App\Models\Commands\PaymentDetail;
 use App\Models\Commands\Rent;
-use App\UseCases\RentingUseCase;
+use App\UseCases\PaidRentUseCase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -100,7 +100,7 @@ class PaymentController extends Controller
             $error = "Leasing does not exist!";
             return response()->json(ApiResponse::error(404, $error), 404);
         }
-        RentingUseCase::payRent($request->rentId, $request->paymentAmount, $request->payer, $assetId);
+        PaidRentUseCase::paidRent($request->rentId, $request->paymentAmount, $request->payer, $assetId);
         //
     }
 

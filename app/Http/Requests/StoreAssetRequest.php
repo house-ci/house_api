@@ -29,6 +29,7 @@ class StoreAssetRequest extends FormRequest
             "door_number" => "required|string|min:1|max:60",
             "is_available" => "nullable|boolean",
             "amount" => "nullable|numeric",
+            "frequency_in_month" => "nullable|numeric",
             "currency" => "nullable|string|min:2|max:4",
             "payment_deadline_day" => "nullable|numeric|min:1|max:120",
             "extras" => "nullable|numeric|min:1|max:120",
