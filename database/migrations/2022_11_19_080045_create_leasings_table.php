@@ -19,6 +19,8 @@ return new class extends Migration {
             $table->integer('amount');
             $table->string('currency')->index()->default('XOF');
             $table->string('payment_deadline_day')->default('5');
+            $table->string('next_leasing_period')->nullable();
+            $table->enum('type',['POSTPAY','PREPAY'])->default('PREPAY');
             $table->string('agreement_url')->nullable();
             $table->boolean('is_active')->default(true);
             $table->foreignUuid('asset_id')->constrained();

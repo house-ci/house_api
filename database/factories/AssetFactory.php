@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Factories\Commands;
+namespace Database\Factories;
 
 use App\Models\Queries\RealEstate;
 use Illuminate\Database\Eloquent\Factories\Factory;

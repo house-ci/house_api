@@ -19,9 +19,11 @@ return new class extends Migration {
             $table->string('year');
             $table->string('status')->default('PENDING');
             $table->integer('amount');
+            $table->integer('penality');
             $table->integer('amount_paid')->default(0);
             $table->string('currency')->default('XOF');
             $table->dateTimeTz('paid_at')->nullable();
+            $table->dateTimeTz('deadline')->nullable();
             $table->foreignUuid('leasing_id')->constrained();
 
             $table->timestampsTz();

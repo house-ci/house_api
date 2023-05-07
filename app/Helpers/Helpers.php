@@ -5,6 +5,8 @@ namespace App\Helpers;
 
 
 use App\Models\Ticket;
+use DateInterval;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -194,5 +196,33 @@ class Helpers
             $params .= "$key=$item&";
         }
         return substr($params, 0, -1);
+    }
+
+    public static function getDayOfMonth($day, $start_date, $end_date)
+    {
+        $dates = array();
+        $current_date = strtotime((strlen($day) === 1 ? '0' . $day : $day) . '-' . date('m-Y', strtotime($start_date)));
+        $end_date = strtotime($end_date);
+        while ($current_date <= $end_date) {
+            $dates[] = date('d-m-Y', $current_date);
+            $current_date = strtotime('+1 month', $current_date);
+        }
+        return $dates;
+    }
+
+    public static function subtractMonth($date)
+    {
+//        $dateTime = new DateTime($date); // create a DateTime object with the specific date and time
+        $interval = new DateInterval('P1M'); // create a DateInterval object representing one month// subtract one month from the specific date and time
+        return  (new DateTime($date))->sub($interval)->format('d-m-Y');
+    }
+    public static function generateRandomString($length = 10) {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[random_int(0, $charactersLength - 1)];
+        }
+        return $randomString;
     }
 }
