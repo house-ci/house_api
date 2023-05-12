@@ -198,22 +198,22 @@ class Helpers
         return substr($params, 0, -1);
     }
 
-    public static function getDayOfMonth($day, $start_date, $end_date)
+    public static function getDayOfMonth($day, $start_date, $end_date,$nbrMonth=1)
     {
         $dates = array();
         $current_date = strtotime((strlen($day) === 1 ? '0' . $day : $day) . '-' . date('m-Y', strtotime($start_date)));
         $end_date = strtotime($end_date);
         while ($current_date <= $end_date) {
             $dates[] = date('d-m-Y', $current_date);
-            $current_date = strtotime('+1 month', $current_date);
+            $current_date = strtotime('+'.$nbrMonth.' month', $current_date);
         }
         return $dates;
     }
 
-    public static function subtractMonth($date)
+    public static function subtractMonth($date,$nbrMonth=1)
     {
 //        $dateTime = new DateTime($date); // create a DateTime object with the specific date and time
-        $interval = new DateInterval('P1M'); // create a DateInterval object representing one month// subtract one month from the specific date and time
+        $interval = new DateInterval('P'.$nbrMonth.'M'); // create a DateInterval object representing one month// subtract one month from the specific date and time
         return  (new DateTime($date))->sub($interval)->format('d-m-Y');
     }
     public static function generateRandomString($length = 10) {
@@ -224,5 +224,20 @@ class Helpers
             $randomString .= $characters[random_int(0, $charactersLength - 1)];
         }
         return $randomString;
+    }
+
+   public static function roundUpTo($number, $multiple)
+    {
+        if ($multiple == 0) {
+            return $number;
+        }
+
+        $remainder = $number % $multiple;
+
+        if ($remainder == 0) {
+            return $number;
+        }
+
+        return $number + ($multiple - $remainder);
     }
 }

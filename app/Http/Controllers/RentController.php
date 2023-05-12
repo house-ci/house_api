@@ -7,7 +7,7 @@ use App\Http\Requests\StoreRentRequest;
 use App\Http\Requests\UpdateRentRequest;
 use App\Models\Commands\Rent;
 
-use App\UseCases\RentingUseCase;
+use App\UseCases\PaidRentUseCase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -26,17 +26,17 @@ class RentController extends Controller
         $ownerId = $request->get('owner')->id;
 
         //apply penality
-        RentingUseCase::applayPenality($assetId);
+        PaidRentUseCase::manageAPenality($assetId);
 
-        $rents = DB::table('real_estates')
-            ->join('assets', 'assets.real_estate_id', '=', 'real_estates.id')
-            ->join('leasings', 'leasings.asset_id', '=', 'assets.id')
-            ->join('rents','rents.leasing_id','=','leasings.id')
+        $rents = Rent::join('leasings','leasings.id','rents.leasing_id')
+            ->join('assets', 'assets.id', '=', 'leasings.asset_id')
+            ->join('real_estates','real_estates.id' ,'=', 'assets.real_estate_id')
             ->where('real_estates.owner_id', '=', $ownerId)
             ->where('real_estates.id', '=', $realEastateId)
             ->where('assets.id', '=', $assetId)
             ->where('rents.status', '=', 'PENDING')
             ->select('rents.*')
+            ->with('leasing.tenant')
             ->orderBy('rents.status','DESC')
             ->orderBy('rents.created_at','ASC')
             ->orderBy('rents.year','ASC')
