@@ -26,9 +26,10 @@ class LeasingController extends Controller
         $owner = $request->get('owner');
         $leasings = DB::table('leasings')
             ->join('tenants', 'tenants.id', '=', 'leasings.tenant_id')
+            ->join('assets', 'assets.id', '=', 'leasings.asset_id')
             ->where('tenants.owner_id', '=', $owner->id)
             ->where('leasings.ended_on', '=',null)
-            ->select('leasings.*')
+            ->select('leasings.*','assets.real_estate_id')
             ->get();
         return response()->json(ApiResponse::getRessourceSuccess(200, $leasings));
     }
@@ -41,7 +42,7 @@ class LeasingController extends Controller
             ->where('tenants.owner_id', '=', $owner->id)
             ->where('assets.id', '=', $assetId)
             ->where('leasings.ended_on', '=',null)
-            ->select('leasings.*')
+            ->select('leasings.*','assets.real_estate_id')
             ->get();
         return response()->json(ApiResponse::getRessourceSuccess(200, $leasings));
     }
@@ -54,7 +55,7 @@ class LeasingController extends Controller
             ->where('tenants.owner_id', '=', $owner->id)
             ->where('assets.id', '=', $assetId)
             ->where('leasings.ended_on', '<>',null)
-            ->select('leasings.*')
+            ->select('leasings.*','assets.real_estate_id')
             ->get();
         return response()->json(ApiResponse::getRessourceSuccess(200, $leasings));
     }
