@@ -51,7 +51,7 @@ class PaidRentUseCase
         }
     }
 
-    public static function generateDetails(Rent $rent, $amount, Payment $payment)
+    public static function generateDetails(Rent $rent, $amount, Payment $payment,$paymentDate)
     {
         $paymentBalance = $amount;
         $rentBalance = $rent->amount - $rent->amount_paid;
@@ -71,12 +71,12 @@ class PaidRentUseCase
         //metta a jour la rente
 
         if ($rent->amount_paid >= ($rent->amount + $rent->penality)) {
-            $paidAt = date('Y-m-d H:i:s');
+            $paidAt =$paymentDate?:date('Y-m-d H:i:s');
             $rent->status = Rent::PAID;
             $rent->paid_at = $paidAt;
         }
 
-        if ($paymentBalance > 0 && $rent->penality > 0) {
+        if ($paymentBalance > 0 && $rent->penality > 0 && ($rent->deadline<$paymentDate)) {
             $penalityPayAmount = $paymentBalance >= $rent->penality ? $rent->penality : $paymentBalance;
             $penalityPayload = [
                 'amount' => $penalityPayAmount,
@@ -89,7 +89,7 @@ class PaidRentUseCase
             $rent->amount_paid += $penalityPayAmount;
 
             if ($rent->amount_paid >= ($rent->amount + $rent->penality)) {
-                $paidAt = date('Y-m-d H:i:s');
+                $paidAt =$paymentDate?: date('Y-m-d H:i:s');
                 $rent->status = Rent::PAID;
                 $rent->paid_at = $paidAt;
             }
@@ -102,7 +102,7 @@ class PaidRentUseCase
 
     }
 
-    private static function payManyRents( $assetId,$paymentBalance,$payment)
+    private static function payManyRents( $assetId,$paymentBalance,$payment,$paymentDate)
     {
         $balance=$paymentBalance;
 
@@ -128,12 +128,12 @@ class PaidRentUseCase
         }
         foreach ($rents as $rent) {
             if ($balance > 0) {
-                $balance = PaidRentUseCase::generateDetails($rent, $balance, $payment);
+                $balance = PaidRentUseCase::generateDetails($rent, $balance, $payment,$paymentDate);
             }
         }
         return $balance;
     }
-    public static function paidRent($rentId, $amount, $payer, $assetId): void
+    public static function paidRent($rentId, $amount, $payer, $assetId,$paymentDate): void
     {
 
         $amount = (int)$amount;
@@ -165,11 +165,11 @@ class PaidRentUseCase
             if (!empty($rent) && $rent->status === Rent::PENDING) {
                 $paymentBalance = PaidRentUseCase::generateDetails($rent, $amount, $payment);
                 if ($paymentBalance > 0) {
-                    $paymentBalance=  PaidRentUseCase::payManyRents($assetId,$paymentBalance,$payment);
+                    $paymentBalance=  PaidRentUseCase::payManyRents($assetId,$paymentBalance,$payment,$paymentDate);
                 }
             }
              if(empty($rent)){
-                $paymentBalance= PaidRentUseCase::payManyRents($assetId,$amount,$payment);
+                $paymentBalance= PaidRentUseCase::payManyRents($assetId,$amount,$payment,$paymentDate);
             }
              if ($paymentBalance > 0) {
                 //creer  a partir du dernier rent
@@ -187,7 +187,7 @@ class PaidRentUseCase
                     PaidRentUseCase::generateLeasings($paymentBalance,$rent->leasing_id);
                     //payer les impayee dans l'ordre croissant la date de creation
                     //pay rents
-                    PaidRentUseCase::payManyRents($assetId,$paymentBalance,$payment);
+                    PaidRentUseCase::payManyRents($assetId,$paymentBalance,$payment,$paymentDate);
                 }
             }
             // }, 5);

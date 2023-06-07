@@ -27,6 +27,7 @@ class MakePaymentRequest extends FormRequest
             "paymentAmount"=>"required|numeric|min:500",
             "payer"=>"nullable|string",
             "rentId"=>"nullable|string",
+            "paymentDate"=>"nullable|date_format:Y-m-d H:i:s",
         ];
     }
 }
