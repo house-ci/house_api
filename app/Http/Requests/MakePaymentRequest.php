@@ -24,10 +24,10 @@ class MakePaymentRequest extends FormRequest
     public function rules()
     {
         return [
-            "paymentAmount"=>"required|numeric|min:500",
+            "amount"=>"required|numeric|min:500",
             "payer"=>"nullable|string",
-            "rentId"=>"nullable|string",
-            "paymentDate"=>"nullable|date_format:Y-m-d H:i:s",
+            "rent_id"=>"nullable|string",
+            "date"=>"nullable|date_format:Y-m-d H:i:s",
         ];
     }
 }

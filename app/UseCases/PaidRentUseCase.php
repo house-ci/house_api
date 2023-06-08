@@ -53,84 +53,94 @@ class PaidRentUseCase
 
     public static function generateDetails(Rent $rent, $amount, Payment $payment,$paymentDate)
     {
-        $paymentBalance = $amount;
-        $rentBalance = $rent->amount - $rent->amount_paid;
-        $paymentAmount = $paymentBalance >= $rentBalance ? $rentBalance : $paymentBalance;
+        try {
+            $paymentBalance = $amount;
+            $rentBalance = $rent->amount - $rent->amount_paid;
+            $paymentAmount = $paymentBalance >= $rentBalance ? $rentBalance : $paymentBalance;
 
-        $rent->amount_paid += $paymentAmount;
-        //creer detail payement
-        $paymentDetailsPayload = [
-            'amount' => $paymentAmount,
-            'type' => PaymentDetail::RENTAL,
-            'rent_id' => $rent->id,
-            'payment_id' => $payment->id,
-        ];
-        PaymentDetail::create($paymentDetailsPayload);
-
-        $paymentBalance -= $paymentAmount;
-        //metta a jour la rente
-
-        if ($rent->amount_paid >= ($rent->amount + $rent->penality)) {
-            $paidAt =$paymentDate?:date('Y-m-d H:i:s');
-            $rent->status = Rent::PAID;
-            $rent->paid_at = $paidAt;
-        }
-
-        if ($paymentBalance > 0 && $rent->penality > 0 && ($rent->deadline<$paymentDate)) {
-            $penalityPayAmount = $paymentBalance >= $rent->penality ? $rent->penality : $paymentBalance;
-            $penalityPayload = [
-                'amount' => $penalityPayAmount,
-                'type' => PaymentDetail::PENALITY,
+            $rent->amount_paid += $paymentAmount;
+            //creer detail payement
+            $paymentDetailsPayload = [
+                'amount' => $paymentAmount,
+                'type' => PaymentDetail::RENTAL,
                 'rent_id' => $rent->id,
                 'payment_id' => $payment->id,
             ];
-            PaymentDetail::create($penalityPayload);
+            PaymentDetail::create($paymentDetailsPayload);
 
-            $rent->amount_paid += $penalityPayAmount;
+            $paymentBalance -= $paymentAmount;
+            //metta a jour la rente
 
             if ($rent->amount_paid >= ($rent->amount + $rent->penality)) {
-                $paidAt =$paymentDate?: date('Y-m-d H:i:s');
+                $paidAt =$paymentDate?$paymentDate:date('Y-m-d H:i:s');
                 $rent->status = Rent::PAID;
                 $rent->paid_at = $paidAt;
             }
 
-            $paymentBalance -= $penalityPayAmount;
-        }
-        $rent->save();
+            if ($paymentBalance > 0 && $rent->penality > 0 && ($rent->deadline<$paymentDate)) {
+                $penalityPayAmount = $paymentBalance >= $rent->penality ? $rent->penality : $paymentBalance;
+                $penalityPayload = [
+                    'amount' => $penalityPayAmount,
+                    'type' => PaymentDetail::PENALITY,
+                    'rent_id' => $rent->id,
+                    'payment_id' => $payment->id,
+                ];
+                PaymentDetail::create($penalityPayload);
 
+                $rent->amount_paid += $penalityPayAmount;
+
+                if ($rent->amount_paid >= ($rent->amount + $rent->penality)) {
+                    $paidAt =$paymentDate?$paymentDate: date('Y-m-d H:i:s');
+                    $rent->status = Rent::PAID;
+                    $rent->paid_at = $paidAt;
+                }
+
+                $paymentBalance -= $penalityPayAmount;
+            }
+            $rent->save();
+        } catch (\Exception $e) {
+            Log::info($e->getMessage());
+        }
         return $paymentBalance;
 
     }
 
     private static function payManyRents( $assetId,$paymentBalance,$payment,$paymentDate)
     {
-        $balance=$paymentBalance;
+        try {
+            $balance=$paymentBalance;
 
-        $rents = Rent::join('leasings','leasings.id','=','rents.leasing_id')
-            ->join('assets', 'assets.id','=', 'leasings.asset_id')
-            ->where('assets.id',$assetId)
-            ->where('rents.status','PENDING')
-            ->select('rents.*')
-            ->orderBy('rents.created_at', 'ASC')
-            ->orderBy('rents.year', 'ASC')
-            ->orderBy('rents.month', 'ASC')
-            ->get();
-        if($rents->isEmpty()){
-            $currentDate = Carbon::now();
-            $dateNow = Carbon::parse($currentDate);
-            $leasing = Leasing::join('assets','assets.id','=','leasings.asset_id')
+            $rents = Rent::join('leasings','leasings.id','=','rents.leasing_id')
+                ->join('assets', 'assets.id','=', 'leasings.asset_id')
                 ->where('assets.id',$assetId)
-                ->where('leasings.ended_on', '=', null)
-                ->select('leasings.*')
-                ->orWhereDate('leasings.ended_on', '<', $dateNow->format('Y-m-d'))
-                ->first();
-            PaidRentUseCase::generateLeasings($balance,$leasing->id);
-        }
-        foreach ($rents as $rent) {
-            if ($balance > 0) {
-                $balance = PaidRentUseCase::generateDetails($rent, $balance, $payment,$paymentDate);
+                ->where('rents.status','PENDING')
+                ->select('rents.*')
+                ->orderBy('rents.created_at', 'ASC')
+                ->orderBy('rents.year', 'ASC')
+                ->orderBy('rents.month', 'ASC')
+                ->get();
+            if($rents->isEmpty()){
+                $currentDate = Carbon::now();
+                $dateNow = Carbon::parse($currentDate);
+                $leasing = Leasing::join('assets','assets.id','=','leasings.asset_id')
+                    ->where('assets.id',$assetId)
+                    ->where('leasings.ended_on', '=', null)
+                    ->select('leasings.*')
+                    ->orWhereDate('leasings.ended_on', '<', $dateNow->format('Y-m-d'))
+                    ->first();
+                PaidRentUseCase::generateLeasings($balance,$leasing->id);
+//                $rents=Rent::where('status','PENDING')->get();
             }
+            foreach ($rents as $rent) {
+                if ($balance > 0) {
+                    $balance = PaidRentUseCase::generateDetails($rent, $balance, $payment,$paymentDate);
+                }
+            }
+        } catch (\Exception $e) {
+            echo $e;
+            Log::info($e->getMessage());
         }
+
         return $balance;
     }
     public static function paidRent($rentId, $amount, $payer, $assetId,$paymentDate): void
@@ -162,7 +172,7 @@ class PaidRentUseCase
             ];
             $payment = Payment::create($payload);
             $paymentBalance = 0;
-            if (!empty($rent) && $rent->status === Rent::PENDING) {
+            if (!empty($rent)) {
                 $paymentBalance = PaidRentUseCase::generateDetails($rent, $amount, $payment);
                 if ($paymentBalance > 0) {
                     $paymentBalance=  PaidRentUseCase::payManyRents($assetId,$paymentBalance,$payment,$paymentDate);
@@ -192,7 +202,6 @@ class PaidRentUseCase
             }
             // }, 5);
         } catch (\Exception $e) {
-            echo $e;
             Log::info($e->getMessage());
         }
     }

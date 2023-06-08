@@ -25,8 +25,7 @@ class AssetController extends Controller
         if (empty($realEstate)) {
             return response()->json(ApiResponse::NOTFOUND, 404);
         }
-        $assets = Asset::where('real_estate_id', $realEstate->id)
-            ->get();
+        $assets = Asset::where('real_estate_id', $realEstate->id)->get();
         $realEstate['assets'] = $assets;
         return response()->json(ApiResponse::getRessourceSuccess(200, $realEstate));
     }

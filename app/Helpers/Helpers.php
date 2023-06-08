@@ -206,6 +206,7 @@ class Helpers
         while ($current_date <= $end_date) {
             $dates[] = date('d-m-Y', $current_date);
             $current_date = strtotime('+'.$nbrMonth.' month', $current_date);
+
         }
         return $dates;
     }

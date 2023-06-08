@@ -9,6 +9,7 @@ use App\Models\Commands\Owner;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use function PHPUnit\Framework\isEmpty;
 
 final class OwnerController extends Controller
 {
@@ -22,7 +23,16 @@ final class OwnerController extends Controller
     {
 
         try {
-            $owner = Owner::create($request->validated());
+            $owner=Owner::where('email',$request->email)->first();
+           if(empty($owner)){
+               $owner = Owner::create($request->validated());
+           }else{
+               $data = $request->validated();
+                   foreach ($data as $key => $value) {
+                       $owner->$key = $value;
+                   }
+               $owner->save();
+           }
             if ($owner) {
                 return response()->json(ApiResponse::getRessourceSuccess(201, $owner), 201);
             }
