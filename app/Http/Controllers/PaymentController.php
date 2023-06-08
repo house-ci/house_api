@@ -37,6 +37,7 @@ class PaymentController extends Controller
             ->where('tenants.owner_id', $owner->id)
             ->where('leasings.asset_id', $assetId)
             ->select('payments.*')
+            ->distinct()
             ->with('details.rent')
             ->orderBy('payments.created_at', 'DESC')
             ->get();
@@ -100,7 +101,7 @@ class PaymentController extends Controller
             $error = "Leasing does not exist!";
             return response()->json(ApiResponse::error(404, $error), 404);
         }
-        PaidRentUseCase::paidRent($request->rentId, $request->paymentAmount, $request->payer, $assetId);
+        PaidRentUseCase::paidRent($request->rent_id, $request->amount, $request->payer, $assetId,$request->date);
         //
     }
 
