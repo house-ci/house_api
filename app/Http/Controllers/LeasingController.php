@@ -202,7 +202,7 @@ class LeasingController extends Controller
             Log::critical($e->getMessage(), $e->getTrace());
             return response()->json(ApiResponse::SERVERERROR);
         }
-        return response()->json(ApiResponse::getRessourceSuccess(201, $leasing));
+        return response()->json(ApiResponse::getRessourceSuccess(200, $leasing));
     }
 
     /**

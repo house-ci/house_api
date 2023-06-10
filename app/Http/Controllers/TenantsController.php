@@ -53,7 +53,7 @@ class TenantsController extends Controller
             Log::critical($e->getMessage(), $e->getTrace());
             return response()->json(ApiResponse::SERVERERROR);
         }
-        return response()->json(ApiResponse::getRessourceSuccess(201, $estate));
+        return response()->json(ApiResponse::getRessourceSuccess(200, $estate));
     }
 
     /**
