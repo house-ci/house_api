@@ -49,7 +49,7 @@ class AssetController extends Controller
             Log::critical($e->getMessage(), $e->getTrace());
             return response()->json(ApiResponse::SERVERERROR);
         }
-        return response()->json(ApiResponse::getRessourceSuccess(201, $asset));
+        return response()->json(ApiResponse::getRessourceSuccess(200, $asset));
 
     }
 

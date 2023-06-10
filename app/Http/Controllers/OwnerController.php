@@ -14,6 +14,16 @@ use function PHPUnit\Framework\isEmpty;
 final class OwnerController extends Controller
 {
     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        //
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param StoreOwnerRequest $request
@@ -34,7 +44,7 @@ final class OwnerController extends Controller
                $owner->save();
            }
             if ($owner) {
-                return response()->json(ApiResponse::getRessourceSuccess(201, $owner), 201);
+                return response()->json(ApiResponse::getRessourceSuccess(200, $owner), 201);
             }
         } catch (\Exception $e) {
             info($e->getMessage());
