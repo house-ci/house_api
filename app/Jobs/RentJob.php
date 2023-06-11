@@ -34,7 +34,7 @@ class RentJob implements ShouldQueue
     {
         $currentHour = (int) date('H');
         if ($currentHour >= 1 && $currentHour <= 6) {
-            Log::info('Execution at ' . Carbon::now());
+//            Log::info('Execution at ' . Carbon::now());
             $currentDate = Carbon::now();
             $dateNow = Carbon::parse($currentDate);
             Leasing::where('next_leasing_period', '=', null)

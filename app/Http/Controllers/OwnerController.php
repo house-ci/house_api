@@ -33,24 +33,22 @@ final class OwnerController extends Controller
     {
 
         try {
-            $owner=Owner::where('email',$request->email)->first();
-           if(empty($owner)){
-               $owner = Owner::create($request->validated());
-           }else{
-               $data = $request->validated();
-                   foreach ($data as $key => $value) {
-                       $owner->$key = $value;
-                   }
-               $owner->save();
-           }
-            if ($owner) {
-                return response()->json(ApiResponse::getRessourceSuccess(200, $owner), 201);
+            $owner = Owner::where('email', $request->email)->first();
+            if (empty($owner)) {
+                $owner = Owner::create($request->validated());
+            } else {
+                $data = $request->validated();
+                foreach ($data as $key => $value) {
+                    $owner->$key = $value;
+                }
+                $owner->save();
             }
+            return response()->json(ApiResponse::getRessourceSuccess(200, $owner));
         } catch (\Exception $e) {
             info($e->getMessage());
+            $error = 'An Error Occurred while storing';
+            return response()->json(ApiResponse::error(500, $error), 500);
         }
-        $error = 'An Error Occurred while storing';
-        return response()->json(ApiResponse::error(500, $error), 500);
     }
 
     /**
@@ -59,7 +57,7 @@ final class OwnerController extends Controller
      * @param Owner $owner
      * @return JsonResponse
      */
-    public function show(Request $request) :JsonResponse
+    public function show(Request $request): JsonResponse
     {
         $owner = ($request->owner ?? $request->get('owner'));
 
