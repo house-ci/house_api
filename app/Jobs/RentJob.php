@@ -3,14 +3,13 @@
 namespace App\Jobs;
 
 use App\Models\Commands\Leasing;
-use App\UseCases\CreateRentUseCase;
+use App\UseCases\Rents\CreateRentUseCase;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Log;
 
 class RentJob implements ShouldQueue
 {
