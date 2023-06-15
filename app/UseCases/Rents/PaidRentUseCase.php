@@ -1,9 +1,8 @@
 <?php
 
-namespace App\UseCases;
+namespace App\UseCases\Rents;
 
 use App\Helpers\Helpers;
-use App\Models\Commands\Asset;
 use App\Models\Commands\Leasing;
 use App\Models\Commands\Payment;
 use App\Models\Commands\PaymentDetail;
@@ -29,6 +28,7 @@ class PaidRentUseCase
             ->whereDate('deadline','<',$dateNow->format('Y-m-d'))
             ->select('rents.*')
             ->get();
+
         foreach ($rentsForApplyPenality as $rent) {
             $penality=Helpers::roundUpTo(round(($rent->amount-$rent->amount_paid) * (10/100)),100);
             $rent->penality=$penality;

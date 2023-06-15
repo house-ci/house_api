@@ -6,8 +6,7 @@ use App\Helpers\ApiResponse;
 use App\Http\Requests\MakePaymentRequest;
 use App\Models\Commands\Payment;
 use App\Models\Commands\PaymentDetail;
-use App\Models\Commands\Rent;
-use App\UseCases\PaidRentUseCase;
+use App\UseCases\Rents\PaidRentUseCase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 

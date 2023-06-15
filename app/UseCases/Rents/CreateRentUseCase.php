@@ -1,6 +1,6 @@
 <?php
 
-namespace App\UseCases;
+namespace App\UseCases\Rents;
 
 use App\Helpers\Helpers;
 use App\Models\Commands\Asset;

@@ -6,10 +6,9 @@ use App\Helpers\ApiResponse;
 use App\Http\Requests\StoreRentRequest;
 use App\Http\Requests\UpdateRentRequest;
 use App\Models\Commands\Rent;
-
-use App\UseCases\PaidRentUseCase;
+use App\UseCases\Rents\GetRentPaidUseCase;
+use App\UseCases\Rents\PaidRentUseCase;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class RentController extends Controller
 {
@@ -48,20 +47,7 @@ class RentController extends Controller
 
     public function getRentsPaid($realEastateId,$assetId,Request $request){
         $ownerId = $request->get('owner')->id;
-        $rents = DB::table('real_estates')
-            ->join('assets', 'assets.real_estate_id', '=', 'real_estates.id')
-            ->join('leasings', 'leasings.asset_id', '=', 'assets.id')
-            ->join('rents','rents.leasing_id','=','leasings.id')
-            ->where('real_estates.owner_id', '=', $ownerId)
-            ->where('real_estates.id', '=', $realEastateId)
-            ->where('assets.id', '=', $assetId)
-            ->where('rents.status', '=', 'PAID')
-            ->select('rents.*')
-            ->orderBy('rents.status','DESC')
-            ->orderBy('rents.created_at','ASC')
-            ->orderBy('rents.year','ASC')
-            ->orderBy('rents.month','ASC')
-            ->get();
+        $rents = GetRentPaidUseCase::allRentPaidOnAsset($realEastateId,$assetId,$ownerId);
 
         return  response()->json(ApiResponse::getRessourceSuccess(200,$rents));
     }
