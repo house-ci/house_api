@@ -37,7 +37,9 @@ class PaymentController extends Controller
             ->where('leasings.asset_id', $assetId)
             ->select('payments.*')
             ->distinct()
-            ->with('details.rent')
+            ->with(['details.rent' => function ($query) {
+                $query->orderBy('created_at', 'DESC');
+            }])
             ->orderBy('payments.created_at', 'DESC')
             ->get();
 
@@ -59,7 +61,9 @@ class PaymentController extends Controller
             ->where('tenants.owner_id', $owner->id)
             ->where('leasings.asset_id', $assetId)
             ->select('payment_details.*')
-            ->with('rent')
+            ->with(['rent' => function ($query) {
+                $query->orderBy('created_at', 'DESC');
+            }])
             ->orderBy('payment_details.created_at', 'DESC')
             ->get();
 

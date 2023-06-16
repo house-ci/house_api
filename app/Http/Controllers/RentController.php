@@ -35,7 +35,9 @@ class RentController extends Controller
             ->where('assets.id', '=', $assetId)
             ->where('rents.status', '=', 'PENDING')
             ->select('rents.*')
-            ->with('leasing.tenant')
+            ->with(['leasing.tenant' => function ($query) {
+                $query->orderBy('created_at', 'DESC');
+            }])
             ->orderBy('rents.status','DESC')
             ->orderBy('rents.created_at','ASC')
             ->orderBy('rents.year','ASC')
