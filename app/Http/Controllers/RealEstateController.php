@@ -21,8 +21,12 @@ class RealEstateController extends Controller
     public function index(Request $request)
     {
         $owner = $request->get('owner');
-        $realEstates = RealEstate::where('owner_id', $owner->id)->with('assets')
+        $realEstates = RealEstate::where('owner_id', $owner->id)
             ->withCount('assets')
+            ->with(['assets' => function ($query) {
+                $query->orderBy('created_at', 'DESC');
+            }])
+            ->orderBy('created_at', 'desc')
             ->get();
         return response()->json(ApiResponse::getRessourceSuccess(200, $realEstates));
     }
@@ -58,7 +62,9 @@ class RealEstateController extends Controller
         $owner = $request->get('owner');
         $realEstate = RealEstate::where([['id', $realEstateId], ['owner_id', $owner->id]])
             ->withCount('assets')
-            ->with('assets')
+            ->with(['assets' => function ($query) {
+                $query->orderBy('created_at', 'DESC');
+            }])
             ->first();
         if (empty($realEstate)) {
             return response()->json(ApiResponse::NOTFOUND, 404);

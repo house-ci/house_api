@@ -30,6 +30,7 @@ class LeasingController extends Controller
             ->where('tenants.owner_id', '=', $owner->id)
             ->where('leasings.ended_on', '=',null)
             ->select('leasings.*','assets.real_estate_id')
+            ->orderBy('leasings.deleted_at','desc')
             ->get();
         return response()->json(ApiResponse::getRessourceSuccess(200, $leasings));
     }
@@ -43,6 +44,7 @@ class LeasingController extends Controller
             ->where('assets.id', '=', $assetId)
             ->where('leasings.ended_on', '=',null)
             ->select('leasings.*','assets.real_estate_id')
+            ->orderBy('leasings.deleted_at','desc')
             ->get();
         return response()->json(ApiResponse::getRessourceSuccess(200, $leasings));
     }
@@ -56,6 +58,7 @@ class LeasingController extends Controller
             ->where('assets.id', '=', $assetId)
             ->where('leasings.ended_on', '<>',null)
             ->select('leasings.*','assets.real_estate_id')
+            ->orderBy('leasings.deleted_at','desc')
             ->get();
         return response()->json(ApiResponse::getRessourceSuccess(200, $leasings));
     }
