@@ -151,7 +151,6 @@ class PaidRentUseCase
         try {
             //apply penality
             PaidRentUseCase::manageAPenality($assetId);
-
             $rent = Rent::join('leasings','leasings.id','=','rents.leasing_id')
                 ->join('assets', 'assets.id','=', 'leasings.asset_id')
                 ->where('assets.id',$assetId)
@@ -173,7 +172,7 @@ class PaidRentUseCase
             $payment = Payment::create($payload);
             $paymentBalance = 0;
             if (!empty($rent)) {
-                $paymentBalance = PaidRentUseCase::generateDetails($rent, $amount, $payment);
+                $paymentBalance = PaidRentUseCase::generateDetails($rent, $amount, $payment,$paymentDate);
                 if ($paymentBalance > 0) {
                     $paymentBalance=  PaidRentUseCase::payManyRents($assetId,$paymentBalance,$payment,$paymentDate);
                 }
