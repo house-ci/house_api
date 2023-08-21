@@ -32,7 +32,7 @@ class RentJob implements ShouldQueue
     public function handle()
     {
         $currentHour = (int) date('H');
-//        if ($currentHour >= 1 && $currentHour <= 6) {
+        if ($currentHour >= 1 && $currentHour <= 6) {
 //            Log::info('Execution at ' . Carbon::now());
             $currentDate = Carbon::now();
             $dateNow = Carbon::parse($currentDate);
@@ -46,6 +46,6 @@ class RentJob implements ShouldQueue
                         CreateRentUseCase::createRent($leasing);
                     }
                 });
-//        }
+        }
     }
 }
