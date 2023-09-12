@@ -20,7 +20,6 @@ class DashboardController extends Controller
     public function index(Request $request)
     {
         $owner = ($request->owner ?? $request->get('owner'));
-//dd($owner->realEstates);
         $tenants = DB::table('tenants')
             ->join('leasings', 'tenants.id', '=', 'leasings.tenant_id')
             ->join('assets', 'assets.id', '=', 'leasings.asset_id')
