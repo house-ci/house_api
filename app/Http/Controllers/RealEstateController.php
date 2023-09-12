@@ -24,7 +24,7 @@ class RealEstateController extends Controller
         $realEstates = RealEstate::where('owner_id', $owner->id)
             ->withCount('assets')
             ->with(['assets' => function ($query) {
-                $query->orderBy('created_at', 'DESC');
+                $query->where('deleted_at',null)->orderBy('created_at', 'DESC');
             }])
             ->orderBy('created_at', 'desc')
             ->get();
@@ -105,10 +105,23 @@ class RealEstateController extends Controller
      * Remove the specified resource from storage.
      *
      * @param RealEstate $realEstate
-     * @return Response
+     * @return JsonResponse
      */
     public function destroy(RealEstate $realEstate)
     {
-        RealEstate::destroy($realEstate->id);
+        try {
+            $assets=RealEstate::join('assets','assets.real_estate_id','=','real_estates.id')
+                                ->where('real_estates.id',$realEstate->id)
+                                ->first();
+            if(!empty($assets)){
+                $error = "Impossible de un bien immobilier avec des appartements !";
+                return response()->json(ApiResponse::error(400, $error), 400);
+            }
+            RealEstate::destroy($realEstate->id);
+            return response()->json(ApiResponse::getRessourceSuccess(200, ''));
+        }catch (\Exception $e){
+            Log::critical($e->getMessage(), $e->getTrace());
+            return response()->json(ApiResponse::SERVERERROR);
+        }
     }
 }
